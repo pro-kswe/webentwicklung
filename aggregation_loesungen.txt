@@ -1,0 +1,42 @@
+-- Aufgabe 1
+
+select max(age)
+from sailor
+
+-- Aufgabe 2
+
+select count(color) as anzahl_rote_boote
+from boat
+where color = 'red'
+
+-- Hinweis: Das Zählen der Werte in der Spalte color ist "safe", 
+-- da mit color = 'red' in der where-Komponente garantiert wird,
+-- dass es keine null-Werte gibt.
+
+-- Aufgabe 3
+
+select sum(monatsgehalt) as gesamtgehalt
+from mitarbeiter
+
+-- Aufgabe 4
+
+select count(distinct fachbereich)
+from mitarbeiter
+
+-- Aufgabe 5
+
+select avg(monatsgehalt) as durchschnittsgehalt
+from mitarbeiter
+where fachbereich = 'Informatik'
+
+-- Aufgabe 6
+
+select count(sailor_id)
+from sailor
+where rating is null
+
+oder
+
+select count(*)
+from sailor
+where rating is null

@@ -1,0 +1,44 @@
+drop table if exists film cascade;
+
+create table film
+(
+   titel         text,
+   regie         text,
+   jahr          int ,
+   schauspieler1 text,
+   schauspieler2 text
+);
+
+insert into film (titel, regie, jahr, schauspieler1, schauspieler2)
+values ('Batman Begins', 'Christopher Nolan', 2005, 'Christian Bale', 'Morgan Freeman');
+ 
+insert into film (titel, regie, jahr, schauspieler1, schauspieler2)
+values ('The Holiday', 'Nancy Meyers', 2006, 'Kate Winslet', 'Cameron Diaz');
+
+drop table if exists sailor cascade;
+
+create table sailor (
+    sailor_id   varchar(100) unique not null,
+    sailor_name text                not null,
+    rating      int,
+    age         int
+);
+
+
+insert into sailor (sailor_id, sailor_name, rating, age)
+values ('s_22', 'Dustin', 7, 45);
+
+insert into sailor (sailor_id, sailor_name, rating, age)
+values ('s_23', 'Horatio', 7, null);
+
+insert into sailor (sailor_id, sailor_name, rating, age)
+values ('s_29', 'Brutus', 1, 33),
+       ('s_31', 'Lubber', 8, 55),
+       ('s_32', 'Andy', 8, 25),
+       ('s_58', 'Rusty', 10, 35),
+       ('s_64', 'Horatio', 7, 35),
+       ('s_71', 'Zorba', 10, 16),
+       ('s_74', 'Horatio', 9, 35),
+       ('s_85', 'Art', 3, 25),
+       ('s_95', 'Bob', 3, 63),
+       ('s_99', 'Ghost', NULL, 99);

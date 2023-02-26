@@ -1,0 +1,83 @@
+%!TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{exploits_of_a_mom}
+\chapterimagetitle{\uppercase{Exploits of a Mom}}
+\chapterimageurl{https://xkcd.com/327/}
+\chapterimagehover{Her daughter is named Help I'm trapped in a driver's license factory.}
+
+\chapter{Tabellen mit \acs{SQL} erstellen}
+\label{chapter-tabellen-erstellen-sql}
+
+Ein relationales \ac{DBMS} (wie z. B. MariaDB) bietet Ihnen mit der Sprache \ac{SQL} die Möglichkeit, die Informationen in der Datenbank zu bearbeiten. Relationale Datenbanken verwalten alle Daten in Form von \textbf{Tabellen}. Eine Tabelle besteht aus \textbf{Spalten} und \textbf{Zeilen}. Um Daten in der Datenbank zu erstellen, sind zwei \ac{SQL}-Befehle notwendig. In diesem Kapitel lernen Sie den ersten Befehl (Tabellendefinition). Das nächste zeigt das Einfügen der Daten. Das Lernziel lautet somit:
+
+\newcommand{\tabellenMitSQLErstellenLernziele}{
+\protect\begin{todolist}
+\item Sie erstellen eine Tabelle mit \acs{SQL}.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-tabellen-erstellen-sql}, \nameref{chapter-tabellen-erstellen-sql}}{\protect\tabellenMitSQLErstellenLernziele}
+
+\tabellenMitSQLErstellenLernziele
+
+\section{Grundlagen}
+
+Das Erstellen der Tabelle beinhaltet noch keine eigentlichen Daten. Es geht nur darum, die \say{Hülle} für die Daten zu definieren. Wir sagen auch, man definiert das \textbf{Schema} der Tabelle. \autoref{lst-create-table-1} zeigt ein Beispiel. Der Befehl definiert eine Tabelle mit \num{7} Spalten.
+
+\begin{lstlisting}[language=SQL, morekeywords={text, real}, caption={\protect\acs{SQL}-Befehl zur Erstellung einer Tabelle.}, label={lst-create-table-1}]
+create table anmeldung (
+  vorname text,
+  tour text,
+  anzahl int,
+  email text,
+  passwort text
+);
+\end{lstlisting}
+
+Die Tabellendefinition beginnt immer mit den reservierten Wörtern \lstinline[language=sql]{create table}. Anschliessend folgt der Tabellenname. Innerhalb der runden Klammern folgen die \textbf{Spaltendefinitionen}. Jede Spalte hat einen \textbf{Namen} und einen \textbf{Datentyp}. Der Datentyp definiert, was für Daten eingetragen werden dürfen. Spaltenname und Datentyp werden durch ein Leerzeichen getrennt. Spaltendefinitionen werden durch ein Komma getrennt. Der \ac{SQL}-Befehl wird mit einem Semikolon beendet.
+
+\begin{important}
+Clean Code! Wir verwenden sinnvolle Namen und \textbf{keine Sonderzeichen, Umlaute oder Leerzeichen}. Wir formatieren den Befehl übersichtlich (z.B. eine Spaltendefinition pro Zeile mit einer Einrückung).
+\end{important}
+
+Spaltennamen müssen innerhalb einer Tabelle eindeutig sein. Tabellennamen müssen innerhalb einer Datenbank eindeutig sein. Die allgemeine Schreibweise für den \lstinline[language=sql]{create table}-Befehl ist in \autoref{lst-syntax-create-table} abgedruckt.
+
+\begin{lstlisting}[language=SQL, morekeywords={real, text}, caption={Die letzte Spaltendefinition besitzt \textbf{kein} Komma am Ende. Die eckigen Klammern bedeuten, dass die Angabe optional ist und somit weggelassen werden kann.}, label={lst-syntax-create-table}]
+create table tabellenname (
+  spaltenname_1 datentyp [unique] [not null],
+  spaltenname_2 datentyp [unique] [not null],
+  ...
+  spaltenname_n datentyp [unique] [not null]
+);
+\end{lstlisting}
+
+\begin{hinweis}
+\ac{SQL}-Befehle müssen nicht auf mehrere Spalten verteilt werden und benötigen keine Einrückung (eng. indentation). Es müssen lediglich die Leerzeichen zwischen den reservierten Wörtern und den Bezeichnern (z.B. Tabellenname) eingehalten werden. Die \textbf{reservierten Wörter} sind \textbf{case insensitive}. Die Gross- und Kleinschreibung spielt also keine Rolle.
+\end{hinweis}
+
+\section{Wie werden \acs{SQL}-Befehle ausgeführt?}
+
+Das Erstellen einer Tabelle wird einmal durchgeführt. Wir müssen den \ac{SQL}-Befehl \textbf{einmal} an das \ac{DBMS} schicken. Dort wird der Befehl ausgeführt und die Tabelle dauerhaft erstellt. Danach löschen wir den \ac{SQL}-Befehl wieder und schicken den nächsten \ac{SQL}-Befehl an das \ac{DBMS}. Wir müssen die Befehle somit nicht speichern oder mehrmals ausführen. Erst in Verbindung mit \ac{PHP} werden die \ac{SQL}-Befehle zum \textbf{Einfügen} und \textbf{Lesen} der Daten im Code dauerhaft notiert und mehrmals ausgeführt.
+
+\section{Leere Zellen}
+
+Standardmässig dürfen in der Tabelle auch Zellen \say{leer} sein. In \ac{SQL} wird dafür der Wert \lstinline[language=sql]{null} verwendet. Wenn wir leere Zellen für eine Spalte \textbf{verbieten} möchten, dann können wir beim \textbf{Definieren der Spalte} noch \lstinline[language=sql]{not null} notieren. Für diese Spalte ist dann ein Wert zwingend.
+
+\section{Eindeutige Werte}
+
+Darf in einer Spalte ein Wert nur einmal vorkommen (z.B. zur Identifikation), dann können wir zusätzlich noch \lstinline[language=sql]{unique} beim Erstellen der Tabelle notieren. Dies bewirkt, dass ein \textbf{Wert in einer Spalte} nur \textbf{einmal} vorkommen darf. 
+
+\begin{important}
+Die Kombination des Datentyps \lstinline[language=sql, morekeywords={text}]{text} und \lstinline[language=sql]{unique} ist aus technischen Gründen \textbf{nicht} möglich. Wir können jedoch den Datentyp \lstinline[language=sql]{varchar(100)} verwenden. Dies erlaubt Texte mit einer Länge von \num{100} Zeichen. Bei \lstinline[language=sql, morekeywords={text}]{text} können wir \num{65535} Zeichen verwenden.
+\end{important}
+
+\begin{lstlisting}[language=SQL, morekeywords={text, real}, caption={Pro Spalte ist ein Wert zwingend. Jede E-Mail-Adresse darf nur einmal vorhanden sein.}, label={lst-create-table-2}]
+create table person (
+  email varchar(100) not null unique,
+  vorname text not null,
+  nachname text not null,
+  alter_in_jahren int not null
+);
+\end{lstlisting}

@@ -1,0 +1,134 @@
+%!TEX root = ../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{spreadsheets}
+\chapterimagetitle{SPREADSHEETS}
+\chapterimageurl{https://xkcd.com/2180/}
+\chapterimagehover{\tiny My brother once asked me if there was a function to produce a calendar grid from a list of dates in Google Sheets. I replied with a single-cell formula that took in a list of dates and outputted a calendar. It used SEQUENCE(), REGEXMATCH(), and a double-nested ARRAYFORMULA(), and it locked up the browser for 15 seconds every time it ran. I think he learned a lot about asking me things.}
+
+\chapter{Eine Webseite mit \acs{CSS} stylen}
+\label{chapter-css}
+
+Beim Stylen von Webseiten geht es darum das Aussehen (z.B. Farben, Typografie, Abstände) von \ac{HTML}-Elementen festzulegen. Früher hat man die Stylingmöglichkeiten von \ac{HTML} genutzt, heute verwendet man eine eigene Stylingsprache: \textbf{Cascading Style Sheets (\ac{CSS})}. Ziel ist es den Inhalt einer Webseite vom Aussehen einer Webseite zu trennen. Deshalb lautet die Strategie: am Anfang erst einmal ohne \ac{CSS}. Dies bedeutet wir strukturieren die Webseite (Überschriften, Tabellen, Aufzählungen ...) zunächst und überlassen dem Browser die Darstellung der Elemente (Standarddarstellung). Danach kommt dann das Styling zum Einsatz - also \ac{CSS}. Es ist gewissermassen eine Ergänzungssprache für \ac{HTML} und erlaubt das beliebige Styling einzelner \ac{HTML}-Elemente. Wir können zum Beispiel festlegen, dass alle Überschriften 24 Punkt gross sind und mit einem grünen Rahmen versehen sind. Bei \ac{CSS} gibt es zahlreiche (!) Möglichkeiten für das Styling. Wir beschränken uns hier auf ausgewählte Möglichkeiten.
+
+\newcommand{\eineWebseiteMitCssStylenLernziele}{
+\protect\begin{todolist}
+\item Sie erklären an einem Beispiel, wozu man \ac{CSS} verwenden kann.
+\item Sie erstellen eine \ac{CSS}-Datei und verknüpfen diese mit einer \ac{HTML}-Datei.
+\item Sie definieren eine \ac{CSS}-Klasse und wenden diese Klasse auf ein \ac{HTML}-Element an.
+\item Sie wenden ein \ac{CSS}-Framework an.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-css}, \nameref{chapter-css}}{\protect\eineWebseiteMitCssStylenLernziele}
+
+\eineWebseiteMitCssStylenLernziele
+
+\begin{hinweis}
+Cascading bedeutet, dass ein Style an alle verschachtelten HTML-Elemente weitergereicht wird. Falls wir die Schriftfarbe des body-Elements auf Blau setzen, dann ist die Schriftfarbe aller verschachtelten HTML-Elemente ebenfalls blau. Wir können das verschachtelte Element natürlich auch mit einem eigenen Style wieder anpassen.
+\end{hinweis}
+
+\section{\acs{CSS}-Datei}
+
+\begin{wrapfigure}[10]{r}{4.5cm}
+\vspace{-20pt}
+\centering
+\begin{tikzpicture}
+	\draw[fill=magenta!50, solid] (0,-0.25) -- (0,1.75) -- (1,1.75) -- (1.5,1.25) -- (1.5,-0.25) -- (0,-0.25);
+	\draw[fill=green!50, solid] (2,1) -- (2,2) -- (2.5,2) -- (2.75,1.75) -- (2.75,1) -- (2,1);
+	\draw[fill=green!50, solid] (2,-0.5) -- (2,0.5) -- (2.5,0.5) -- (2.75,0.25) -- (2.75,-0.5) -- (2,-0.5);
+	\node[text width=2cm, align=center, rotate=90] at (-0.5,0.75) {\texttt{style.css}};
+	\draw[thick, -Triangle] (0.5,0.75) -- (2,1.5);
+	\draw[thick, -Triangle] (0.5,0.75) -- (2,-0.25);
+	\node[text width=4cm, align=center, rotate=90] at (3,0.75) {\acs{HTML}-Dateien};
+	\end{tikzpicture}
+\caption{\ac{CSS}-Datei und \ac{HTML}-Dateien.}
+\label{figure-css-html}
+\end{wrapfigure}
+
+\ac{CSS} erlaubt es, Stile, Farben und Formen zu definieren. Diese Definitionen definieren wir in einer separaten Style-Datei, der \ac{CSS}-Datei. Wie schon \ac{HTML} ist auch \ac{CSS} \textbf{keine} Programmiersprache. Eine \ac{CSS}-Datei können wir dann in beliebig viele \ac{HTML}-Dateien einbinden. So werden einheitliche Stylevorgaben möglich, und der \ac{HTML}-Code wird von Ballast befreit. Spätere Änderungen am Design können wir so leicht durchführen. Möchten wir z.B. die Überschriften ändern, dann müssen wir nur in der \ac{CSS}-Datei eine Anpassung vornehmen und nicht in allen \ac{HTML}-Dateien. \autoref{figure-css-html} illustriert diese Idee. \ac{CSS}-Dateien haben die Dateinamen-Erweiterung \texttt{.css}.
+
+\section{Was macht der Browser?}
+
+Wenn ein Browser eine HTML-Datei herunterlädt, dann werden auch alle referenzierten CSS-Dateien heruntergeladen. Der Browser liest den Inhalt der CSS-Dateien und wendet die Styles beim Rendering an. Nicht alle Browser unterstützen alle CSS-Styles. Sie können mit einer Website prüfen, welche Styles unterstützt werden (siehe z.B. \url{https://css3test.com}).
+
+\section{Stylen mit Klassen}
+
+Um ein \ac{HTML}-Element zu stylen, müssen wir den Style zunächst definieren und dann anwenden. Das Anwenden eines Styles erfolgt in zwei Schritten. Zunächst müssen wir die \ac{CSS}-Datei verlinken und dann die \ac{HTML}-Elemente mit den Klassennamen versehen.
+
+\subsection{Style definieren}
+
+In \ac{CSS} gibt verschiedene Möglichkeiten, wie wir ein \ac{HTML}-Element stylen können. Modernes Webdesign verwendet Klassendeklarationen (auch Klassenselektoren genannt). Damit können wir mehrere Elemente identisch stylen. Wir können somit recht einfach mehreren Überschriften eine rote Schriftart verpassen. Um eine Klassendeklaration zu verwenden, müssen wir in der \ac{CSS}-Datei zunächst eine neue Klasse (eng. class) definieren. Eine Klasse beinhaltet die gewünschten Style-Eigenschaften. \autoref{lst-css-bsp-class} zeigt ein Beispiel für eine Klassendefinition.
+
+\begin{lstlisting}[language=CSS, caption={Klassendefinition in der Datei \texttt{style.css}.}, label={lst-css-bsp-class}]
+.header {
+    color: cornflowerblue;
+    background-color: gold;
+}	
+\end{lstlisting}
+
+Klassen beginnen immer mit einem Punkt (\lstinline{.}). Dann folgt der Klassenname. Diesen können wir frei wählen\footnote{Tipp: Englisch, alles kleinschreiben und mehrere Wörter durch einen Strich verbinden. Beispiel: main-menu (nicht mainMenu oder mainmenu).}. Nach der geschweiften Klammer $\{$ folgen die Style-Deklarationen. Eine Style-Deklaration besteht aus zwei Komponenten: Eigenschaft und Wert. Zum Beispiel ist \lstinline{color} die Eigenschaft und \lstinline{cornflowerblue} der Wert für diese Eigenschaft. Eigenschaft und Wert trennen wir durch einen Doppelpunkt (\lstinline{:}). Die Style-Deklaration schliessen wir mit einem Semikolon (\lstinline{;}) ab. Wir können mehrere Style-Deklarationen pro Klasse notieren.
+
+\begin{cleancode}[Eine Deklaration pro Zeile]
+Notieren Sie in einer Zeile jeweils nur eine Style-Deklaration. Dies sorgt für eine bessere Übersicht über die Klassendeklaration.
+\end{cleancode}
+
+Eine \ac{CSS}-Klasse schliessen wir mit einer weiteren geschweiften Klammer $\}$.
+
+\subsection{\ac{CSS}-Datei mit einer \ac{HTML}-Datei verknüpfen}
+
+Damit wir einen Style anwenden können, müssen wir zuvor die \ac{CSS}-Datei mit der \ac{HTML}-Datei verknüpfen. Dies geschieht über das \lstinline{<link>}-Element im \lstinline{<head>}-Element der entsprechenden \ac{HTML}-Datei. \autoref{lst-head-link-css} zeigt, wie wir eine \ac{CSS}-Datei in eine \ac{HTML}-Datei einbinden.
+
+\begin{lstlisting}[language=HTML, caption={Die Datei \texttt{style.css} wird mit einer \ac{HTML}-Datei verknüpft.}, label={lst-head-link-css}]
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Reisetipps</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>...</body>
+</html>
+\end{lstlisting}
+
+Beabsichtigen wir die Styles der \ac{CSS}-Datei auf mehrere \ac{HTML}-Dateien anzuwenden, dann müssen wir in \textbf{jeder} \ac{HTML}-Datei die Verknüpfung vornehmen. Wir können auch verschiedene \ac{CSS}-Dateien kombinieren. Dazu müssen wir pro \ac{CSS}-Datei ein \lstinline{<link>}-Element einfügen.
+
+\subsection{\ac{HTML}-Elemente stylen}
+
+Wir können eine \ac{CSS}-Klasse für mehrere \ac{HTML}-Elemente verwenden. Damit ein \ac{HTML}-Element einen Style erhält, müssen wir das \ac{HTML} \lstinline{class}-Attribut verwenden. Dies existiert für \textbf{jedes} \ac{HTML}-Element. \autoref{lst-h1-css-header} zeigt ein Beispiel, wie wir die Klasse \texttt{header} einsetzen können.
+
+\begin{lstlisting}[language=HTML, caption={Das \lstinline{h1}-Element verwendet die Klasse \lstinline{header}.}, label={lst-h1-css-header}]
+<h1 class="header">Reisetipps</h1>
+\end{lstlisting}
+
+Der Browser sorgt dann dafür, dass der mit der Klasse verbundene Style eingesetzt und das Rendering entsprechend durchgeführt wird. 
+
+\begin{important}
+	Das \lstinline{class}-Attribut beinhaltet den Namen der Klassendeklaration \textbf{ohne} den Punkt.
+\end{important}
+
+Das \lstinline{class}-Attribut kann \textbf{mehrere} Klassennamen erhalten. Die Klassennamen werden mit einem Leerzeichen getrennt. Der Inhalt beider Klassendeklaration wird dann für das Styling benutzt. \autoref{lst-h1-css-header-bsp-2} und \autoref{lst-css-bsp-class-bsp-2} zeigen ein Beispiel.
+
+\begin{lstlisting}[language=HTML, caption={Das \lstinline{h1}-Element verwendet die Klassen \lstinline{header} und \lstinline{zentriert}.}, label={lst-h1-css-header-bsp-2}]
+<h1 class="header zentriert">Reisetipps</h1>
+\end{lstlisting}
+
+\begin{lstlisting}[language=CSS, caption={Zwei Klassendefinition in der Datei \texttt{style.css}.}, label={lst-css-bsp-class-bsp-2}]
+.header {
+    color: cornflowerblue;
+    background-color: gold;
+}
+
+.zentriert {
+    text-align: center;
+}
+\end{lstlisting}
+
+\section{\acs{CSS}-Frameworks}
+
+Das Stylen von Webseiten kann sehr aufwendig sein. Ein \ac{CSS}-Framework versucht das Styling zu vereinfachen. Typischerweise bietet ein \ac{CSS}-Framework eine Menge von vorgefertigten Klassendeklarationen an. Wir müssen \say{nur} noch das \ac{CSS}-Framework mit der \ac{HTML}-Datei verknüpfen und die vorgegebenen \ac{CSS}-Klassennamen einsetzen. Meist gibt es eine Website, welche die Styles vorstellt und die entsprechenden Klassennamen auflistet. Falls wir auf ein \ac{CSS}-Framework setzen, dann sparen wir vorwiegend Zeit beim Stylen. Unsere Website verliert jedoch unter Umständen an Individualität. Das \ac{CSS}-Framework gibt gewissermassen das Design vor und wir passen nur noch kleine Aspekte an. Deshalb erhalten Website, die das gleiche \ac{CSS}-Framework verwenden, meist einen sehr ähnlichen Style.
+
+\begin{example}[Bulma]
+Ein Beispiel für ein \ac{CSS}-Framework ist Bulma (\url{https://www.bulma.io}). Es besteht aus zahlreichen \ac{CSS}-Klassen und kann kostenfrei verwendet werden. Es unterstützt das Responsive Design, das heisst, es gibt \ac{CSS}-Klassen, sodass eine Webseite auf verschiedenen Geräten (zum Beispiel Notebook, Tablet oder Smartphone) ansprechend dargestellt wird.
+\end{example}

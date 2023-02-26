@@ -1,0 +1,229 @@
+%!TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{query_2}
+\chapterimagetitle{\uppercase{Query}}
+\chapterimageurl{https://xkcd.com/1409/}
+\chapterimagehover{Teil 2 des Comics.}
+
+\chapter{\acs{SQL}-Abfragen: Aggregation und Gruppierung}
+\label{chapter-sql-abfragen-aggregation-gruppierung}
+
+In diesem Kapitel erweitern wir die bereits kennengelernte Datenbankabfragen. Wir schauen uns Aggregatfunktionen\footnote{In der Mathematik versteht man unter Aggregation die Zusammenfassung von Daten nach mathematisch-statistischen Methoden.} an, mit denen wir Werte zusammenfassen können. Wir können beispielsweise den Durchschnitt ausrechnen lassen. Als zweite Erweiterung betrachten wir das Gruppieren von Zeilen. Das Lernziel lautet:
+
+\newcommand{\sqlAbfragenAggregationGruppierungLernziele}{
+\protect\begin{todolist}
+\item Sie erstellen \acs{SQL}-Abfragen mit Aggregatfunktionen.
+\item Sie erstellen \acs{SQL}-Abfragen mit Gruppierungen.
+\item Sie erstellen \acs{SQL}-Abfragen mit einem Filter für Gruppen.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-sql-abfragen-aggregation-gruppierung}, \nameref{chapter-sql-abfragen-aggregation-gruppierung}}{\protect\sqlAbfragenAggregationGruppierungLernziele}
+
+\sqlAbfragenAggregationGruppierungLernziele
+
+\section{Aggregation}
+
+Wir können Daten zusammenführen, in dem wir Aggregatfunktionen verwenden. Es stehen folgende Funktionen zur Verfügung:
+
+\begin{itemize}
+\item \lstinline[language=SQL, upquote=true]{count(A)}: Zählt die Anzahl aller Werte in der Spalte $A$.
+\item \lstinline[language=SQL, upquote=true]{avg(A)}: Berechnet den Durchschnitt aller Werte in der Spalte $A$.
+\item \lstinline[language=SQL, upquote=true]{sum(A)}: Berechnet die Summe aller Werte in der Spalte $A$.
+\item \lstinline[language=SQL, upquote=true]{min(A)}/\lstinline[language=SQL, upquote=true]{max(A)}: Berechnet das Minimum/Maximum aller Werte in der Spalte $A$.
+\end{itemize}
+
+\begin{example}[Das Durchschnittsrating aller Seeleute bestimmen]
+Das Ergebnis dieser Abfrage ist eine Zeile mit einer Spalte und dem Wert $6.6364$.
+\begin{lstlisting}[language=SQL, upquote=true]
+select avg(rating)
+from sailor
+\end{lstlisting}
+\end{example}
+
+Wenn wir \lstinline{distinct} verwenden, dann werden vor der Ausführung alle \textbf{Duplikate} eliminiert. 
+
+\begin{example}
+Jedes Rating wird nur einmal bei der Berechnung verwendet.
+\begin{lstlisting}[language=SQL, upquote=true]
+select avg(distinct rating)
+from sailor
+\end{lstlisting}
+\end{example}
+
+\subsection{Spalten umbenennen}
+
+Wir können im Ergebnis eine Spalte auch umbenennen. Dies geschieht \say{on-the-fly}: Die Tabelle wird nicht verändert, es findet nur eine \textbf{Umbenennung im Ergebnis} statt.
+
+\begin{example}[Die Anzahl aller Seeleute auflisten]
+Wir benennen die Spalte zu Anzahl um.
+\begin{lstlisting}[showstringspaces=off, language=SQL]
+select count(sailor_id) as anzahl
+from sailor
+\end{lstlisting}
+\end{example}
+
+Wir können zusätzlich auch noch die \lstinline[language=SQL]{where}-Komponente verwenden. Die Zeilen werden \textbf{vor} der Aggregatfunktion eliminiert. Das Umbenennen einer Spalte kann auch ohne Aggregatfunktion erfolgen.
+
+\subsection{Stolperfallen}
+
+Es ist im Allgemeinen \textbf{nicht} sinnvoll, neben der \textbf{Aggregatfunktion} noch weitere Spalten im \lstinline[language=SQL]{select} anzeigen zu lassen. MariaDB zeigt meist einfach den Wert aus der ersten Zeile an.
+
+\begin{example}[Nicht sinnvoll]
+Da eine Zahl berechnet wird, ist es nicht sinnvoll auch noch den Namen anzuzeigen. Es ist nicht klar, welcher Name angezeigt werden soll. Entweder verweigert das \ac{DBMS} die Ausführung oder es wird ein beliebiger Name angezeigt.
+\begin{lstlisting}[showstringspaces=off, language=SQL]
+select sailor_name, count(sailor_id) as anzahl
+from sailor
+\end{lstlisting}
+\end{example}
+
+\begin{important}
+Der spezielle Wert \lstinline{null} wird bei (den meisten) Aggregatfunktionen \textbf{vor} der Ausführung der Funktion eliminiert.
+\end{important}
+
+Dieses Verhalten ist sinnvoll. Das Summieren ist beispielsweise auch nicht sinnvoll mit \lstinline{null}. Was soll \lstinline{null} plus 1 ergeben?
+
+\section{Aufgaben}
+
+\subsection{Aufgabe 1}
+
+Fügen Sie die Tabelle \lstinline{mitarbeiter} zur Ihrer Datenbank hinzu. Sie finden die passenden \ac{SQL}-Befehle in einer Textdatei in Microsoft Teams. Sie sehen hier die Struktur der Tabelle.
+
+\begin{lstlisting}[language=SQL]
+create table mitarbeiter (
+  panr int unique not null,
+  fachbereich varchar(50) not null,
+  monatsgehalt int not null,
+  raum varchar(50)
+);
+\end{lstlisting}
+
+\subsection{Aufgabe 2}
+
+Fügen Sie die Tabelle \lstinline{boat} zur Ihrer Datenbank hinzu. Sie finden die passenden \ac{SQL}-Befehle in einer Textdatei in Microsoft Teams. Sie sehen hier die Struktur der Tabelle.
+
+\begin{lstlisting}[language=SQL]
+create table boat (
+  boat_id varchar(100) unique not null,
+  boat_name text not null,
+  color text not null
+);
+\end{lstlisting}
+
+\subsection{Aufgabe 3}
+
+Für die folgenden Aufgaben sind die Tabellen \lstinline{sailor}, \lstinline{mitarbeiter} und \lstinline{boat} notwendig. Je nach Frage müssen Sie eine andere Tabelle verwenden. Es kann auch sein, dass bei einer Abfrage ein \lstinline[language=SQL]{where} benötigt wird.\\
+
+Erstellen Sie eine \ac{SQL}-Abfrage, welche ...
+
+\begin{enumerate}
+\item ...das maximale Alter aller Seeleute ermittelt.
+\item ...die Anzahl der roten Boote ermittelt. Die Spalte soll \lstinline{AnzahlRoteBoote} lauten.
+\item ...das gesamte Monatsgehalt aller Mitarbeiter berechnet. Die Spalte soll \lstinline{Gesamtgehalt} heissen.
+\item ...die Anzahl der verschiedenen Fachbereiche anzeigt.
+\item ...das durchschnittliche Monatsgehalt aller Mitarbeiter aus dem Fachbereich Informatik anzeigt. Nennen Sie die Spalte \lstinline{Durchschnittsgehalt}.
+\item ...anzeigt, wie viele Seeleute keine Bewertung besitzen.
+
+\end{enumerate}
+
+\newpage
+
+\section{Gruppieren und Gruppen filtern}
+
+Wir können eine \ac{SQL}-Abfrage auch mit Komponenten zur Gruppierung erweitern. Dazu gibt es die \lstinline[language=SQL]{group by} und \lstinline[language=SQL]{having} Komponenten. Allgemein lautet eine \ac{SQL}-Abfrage somit wie folgt:
+
+\begin{lstlisting}[language=SQL]
+select spalte(n)
+from tabellenname
+where bedingung
+group by spalte(n)
+having bedingung
+\end{lstlisting}
+
+Die letzten drei Komponenten sind optional. In der \lstinline[language=SQL]{group by}-Komponente können wir Spalten zur Gruppierung angeben. Dann werden die Zeilen in Gruppen aufgeteilt. In der \lstinline[language=SQL]{select}-Komponente sollten wir dann eine Aggregatfunktion definieren. Diese wird dann auf jede Gruppe angewendet. Möchten wir Gruppen filtern, dann können wir mit der \lstinline[language=SQL]{having}-Komponente eine Bedingung angeben. Nur wenn die Bedingung erfüllt ist, wird eine Gruppe in das Ergebnis aufgenommen. Wie immer können wir auch eine \lstinline[language=SQL]{where}-Komponente verwenden. Diese wird \textbf{vor} der Gruppenbildung aktiv. Zeilen, welche der Bedingung nicht genügen, werden also vor der Gruppenbildung eliminiert.
+
+\subsection{\lstinline[language=SQL]{group by}-Komponente}
+
+Wir zeigen ein paar Beispiele, um das Verhalten der Komponente besser zu verstehen.
+
+\begin{example}[Die Anzahl der Seeleute pro Altersstufe ausgeben]
+Es wird nach \lstinline[language=SQL]{age} gruppiert. Für jede Gruppe wird gezählt, wie viele Seeleute in dieser Gruppe vorhanden sind. Neben der Anzahl wird auch das Alter ausgegeben.
+\begin{lstlisting}[language=SQL]
+select age, count(age) as anzahl
+from sailor
+group by age
+\end{lstlisting}
+\end{example}
+
+Wir können natürlich auch andere Aggregatfunktionen und mehrere Aggregatfunktionen pro Gruppe verwenden und nach anderen Spalten gruppieren.
+
+\begin{example}[Die jüngste Person pro Bewertungsstufe ermitteln]
+Es wird nach \lstinline[language=SQL]{rating} gruppiert. Für jede Gruppe wird das minimale Alter bestimmt. Ausserdem wird gezählt wie viele Seeleute in einer Gruppe sind. Neben dem Alter wird auch noch das Rating ausgegeben.
+\begin{lstlisting}[language=SQL]
+select rating, min(age), count(sailor_id)
+from sailor
+group by rating
+\end{lstlisting}
+\end{example}
+
+Wir müssen darauf achten, dass in der \lstinline[language=SQL]{select}-Komponente nur diejenigen Spalten aufgelistet werden, welche entweder in der \lstinline[language=SQL]{group by}-Komponente erscheinen oder innerhalb einer Aggregatfunktion benutzt werden. Folgende Abfrage ist \textbf{nicht sinnvoll}:
+
+\begin{example}[Nicht sinnvoll...]
+Der \lstinline[language=SQL]{sailor_name} erscheint nicht in der \lstinline[language=SQL]{group by}-Komponente und nicht in einer Aggregatfunktion. Diese Abfrage kann ausgeführt werden, jedoch ist der Wert bzgl. \lstinline[language=SQL]{sailor_name} nicht sinnvoll. MariaDB wählt einen beliebigen Wert.
+\begin{lstlisting}[language=SQL]
+select sailor_name, rating, min(age), count(sailor_id)
+from sailor
+group by rating
+\end{lstlisting}
+\end{example}
+
+\subsection{\lstinline[language=SQL]{having}-Komponente}
+
+Möchten wir nun auch Gruppen filtern, dann können wir die \lstinline[language=SQL]{having}-Komponente verwenden. Hier werden Gruppen nach einer Bedingung gefiltert.
+
+\begin{example}[Die jüngste Person pro Bewertungsstufe ermitteln, falls es mindestens zwei Seeleute pro Bewertungsstufe hat]
+Es wird nach \lstinline[language=SQL]{rating} gruppiert. Für jede Gruppe wird gezählt, wie viele \lstinline[language=SQL]{sailor_id}-Werte es gibt. Falls die Anzahl grösser oder gleich 2 ist, dann wird die Gruppe im Ergebnis angezeigt, sonst wird die Gruppe eliminiert (\lstinline[language=SQL]{having}-Komponente). Für die verbleibenden Gruppen wird dann die \lstinline[language=SQL]{select}-Komponente verarbeitet.
+\begin{lstlisting}[language=SQL]
+select rating, min(age), count(sailor_id)
+from sailor
+group by rating
+having count(sailor_id) >= 2
+\end{lstlisting}
+\end{example}
+
+Es gilt wieder zu beachten, dass nur diejenigen Spalten in der \lstinline[language=SQL]{having}-Komponente vorkommen dürfen, welche auch in der \lstinline[language=SQL]{group by}-Komponente vorkommen oder Teil einer Aggregatfunktion sind. Wir können natürlich auch alle Komponenten kombinieren, wie folgendes Beispiel zeigt.
+
+\begin{example}[Die jüngste Person pro Bewertungsstufe ermitteln, falls es mindestens zwei Seeleute pro Bewertungsstufe hat. Es sollen nur Personen betrachtet werden, welche bereits 18 Jahre alt sind]
+Hier gilt, dass die \lstinline[language=SQL]{where}-Komponente vor der \lstinline[language=SQL]{group by}-Komponente verarbeitet wird. Dies bedeutet, dass zuerst die Seeleute, welche jünger als 18 sind aus dem Ergebnis eliminiert werden.
+\begin{lstlisting}[language=SQL]
+select rating, min(age), count(sailor_id)
+from sailor
+where age >= 18
+group by rating
+having count(sailor_id) >= 2
+\end{lstlisting}
+\end{example}
+
+\section{Aufgaben}
+
+Für die folgenden Aufgaben sind die Tabellen \lstinline{sailor}, \lstinline{mitarbeiter}, \lstinline{boat} und \lstinline{profile} notwendig. Je nach Frage müssen Sie eine andere Tabelle verwenden. Es kann auch sein, dass bei einer Abfrage ein \lstinline[language=SQL]{where} benötigt wird.\\
+
+Lösen Sie die Aufgaben. Erstellen Sie eine \ac{SQL}-Abfrage, welche ...
+
+\begin{enumerate}
+\item ...die Anzahl der Boote pro Farbe ermittelt. Geben Sie die Farbe und die Anzahl aus (Spalte umbenennen).
+
+\item ...pro Beziehungsstatus die Anzahl der Personen ermittelt. Geben Sie auch für diejenigen, die keine Angaben zum Beziehungsstatus machen, die Anzahl aus.
+
+\item ...pro Arbeitgeber und Staat die Anzahl der Personen ermittelt. Geben Sie den Arbeitgeber, den Staat und die Anzahl der Personen aus.
+
+\item ...welche das Durchschnittsgehalt pro Fachbereich ausgibt, jedoch nur dann wenn es über 1000 liegt. Geben Sie das Durchschnittsgehalt und den Fachbereich aus.
+
+\item ...alle Fachbereiche ausgibt, die ein $a$ enthalten und deren Gesamtgehalt (Summe der Monatsgehälter) zwischen 200 und 12000 liegt.
+
+\item ...diejenigen Vornamen ermittelt, welche mehrmals vorkommen. Berücksichtigen Sie nur Vornamen mit einem $C$. Geben Sie den Vornamen und die Anzahl aus.
+
+\end{enumerate}
+

@@ -1,0 +1,117 @@
+%!TEX root = ../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{tags}
+\chapterimagetitle{TAGS}
+\chapterimageurl{https://xkcd.com/1144/}
+\chapterimagehover{<A>: Like </a>this.\&nbsp;}
+
+\chapter{Eine Webseite mit \acs{HTML} erstellen}
+\label{chapter-html}
+
+Auf einer \textbf{Webseite} können wir Informationen im \ac{WWW} anderen Menschen zur Verfügung stellen. Eine Webseite kann etwa ein Blogeintrag sein. Mehrere Webseiten bilden zusammen eine \textbf{Website}. Wir sprechen auch vom Webauftritt. Die \textbf{Homepage} bezeichnet die Startseite der Website. In diesem Kapitel geht es darum, eine Webseite mithilfe von \ac{HTML} zu erstellen. Folgende Ziele erreichen Sie nach diesem Kapitel:
+
+\newcommand{\eineWebseiteMitHtmlErstellenLernziele}{
+\protect\begin{todolist}
+\item Sie erklären, was ein Browser ist und geben Beispiele für moderne Browser.
+\item Sie erklären, was ein \ac{HTML}-Dokument ist.
+\item Sie erklären das Zusammenspiel von Browser und \ac{HTML}-Dokument.
+\item Sie erstellen ein \ac{HTML}-Dokument zur Präsentation von Informationen.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-html}, \nameref{chapter-html}}{\protect\eineWebseiteMitHtmlErstellenLernziele}
+
+\eineWebseiteMitHtmlErstellenLernziele
+
+\section{Was ist \acs{HTML}?}
+
+\ac{HTML} ist eine Sprache, die wir verwenden, um Webseiten für das \ac{WWW} zu strukturieren und den Inhalten eine Bedeutung zu geben (Semantik). Es handelt sich bei \ac{HTML} um eine textbasierte Auszeichnungssprache (Markup Language). Es ist keine Programmiersprache.
+
+\subsection{Wie gibt man dem Inhalt eine Bedeutung?}
+
+Wir verwenden \textbf{vorgegebene} \say{Befehle}, um in einem Text ein Wort als besonders wichtig zu markieren oder als eine Abkürzung zu kennzeichnen. Wir können auch einen ganzen Abschnitt als Zitat markieren oder ein Wort zu einem Link umwandeln. Mit den \say{Befehlen} versehen wir den Text oder Textstellen mit weiteren Bedeutungen. Wir sagen, der Text wird semantisch erweitert.
+
+\subsection{Wie strukturiert man eine Webseite?}
+
+Es gibt auch vorgegebene \say{Befehle}, um eine ganze Webseite zu gliedern. Wir können den Inhalt in Abschnitte einteilen, Überschriften hinzufügen oder den Text als Paragraphen umsetzen. Oder vielleicht möchten wir Informationen als Liste oder Tabelle anordnen. Dies sind Beispiele für die Struktur einer Webseite. Die Gliederung hat nicht immer einen visuellen Effekt. Screenreader können jedoch von vielen Strukturen profitieren, wenn der Screenreader eine Webseite analysiert und zum Vorlesen aufbereitet. Auch das Styling mit \ac{CSS} profitiert von einer gut strukturieren Webseite.
+
+\subsection{Was ist ein Browser?}
+
+Ein Webbrowser (kurz Browser) ist ein Computerprogramm zum Navigieren im \ac{WWW} und Anzeigen von Webseiten. Ein Browser lädt die angeforderte Webseite auf den Computer, interpretiert deren Inhalt und stellt den Inhalt grafisch dar. Über die Internetadresse weiss der Browser, welche Webseite angezeigt werden muss. Beispiele für Browser sind Mozilla Firefox, Google Chrome, Opera und Safari.
+
+\subsection{Was ist ein \acs{HTML}-Dokument?}
+
+Ein \ac{HTML}-Dokument ist eine Datei, welche \ac{HTML}-Code beinhaltet. Die Datei besitzt die Dateiendung \texttt{.html}.
+
+\section{Syntax}
+
+Wir klären nun die Notation (Syntax) von \ac{HTML}. Prinzipiell erweitern wir die eigentlichen Informationen durch vorgegebene \say{Befehle}. Diesen Prozess nennen wir Auszeichnung.
+
+\begin{hinweis}
+Wir geben hier \say{nur} eine Zusammenfassung der Konzepte und stellen ausgewählte Beispiele vor. Details sind unter \url{https://html.ginf.ch} zu finden.
+\end{hinweis}
+
+\subsection{Wie funktioniert die Auszeichnung?}
+
+Die vorgegebenen \say{Befehle} nennen wir \ac{HTML}-Elemente. Jedes Element hat eine Bedeutung (Semantik), die der Browser kennt und verarbeiten kann. Durch die Elemente wird die Anzeige im Browser definiert. Elemente haben zum Beispiel die Bedeutung \say{das ist eine Überschrift} oder \say{das ist ein Link}. Dadurch kann der Browser die Inhalte unterschiedlich anzeigen.
+
+\subsection{Syntax für \acs{HTML}-Elemente}
+
+Jedes Element besitzt einen Namen. Den Namen des Elements notieren wir in spitzen Klammern. Der Name zusammen mit den spitzen Klammern wird \textbf{Tag} genannt. Ein Element besteht meist aus einem \textbf{Paar} von Tags. Es gibt ein \textbf{Opening-Tag} und einen \textbf{Closing-Tag}. Dazwischen notieren wir den eigentlichen Inhalt. \autoref{lst-html-grundgeruest} zeigt einige Beispiele.
+
+\subsection{Aufbau eines \acs{HTML}-Dokuments}
+
+Das Grundgerüst für ein \ac{HTML}-Dokument ist in \autoref{lst-html-grundgeruest} dargestellt.
+
+\begin{lstlisting}[language=HTML, caption={Grundgerüst}, label={lst-html-grundgeruest}]
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Reisetipps</title>
+</head>
+<body>
+ <!-- Kommentar -->
+</body>
+</html>
+\end{lstlisting}
+
+Das \ac{HTML}-Dokument beinhaltet bereits die ersten wichtigen \ac{HTML}-Elemente:
+
+\begin{itemize}
+\item \lstinline[language=html]{html}: Stellt die oberste \say{Ebene} im \ac{HTML}-Dokument dar. Wir notieren alle anderen HTML-Elemente darin.
+\item \lstinline[language=html]{head}: Definiert die Zeichenkodierung und die Browsertitelleiste (\lstinline[language=html]{title}).
+\item \lstinline[language=html]{body}: Darin notieren wir den eigentlichen Inhalt der Webseite.
+\end{itemize}
+
+\subsection{Syntax für \acs{HTML}-Attribute}
+
+Wir können für ein \ac{HTML}-Element zusätzliche Informationen notieren. Diese sind \textbf{nicht} Teil des Inhalts und werden nicht (direkt) dargestellt. Jede zusätzliche Information wird mit einem \textbf{Attribut} definiert. Jedes Element erlaubt eine vorgegebene Menge von Attributen. Jedes Attribut hat eine Bedeutung, die auch der Browser kennt. Mit dieser Information passt der Browser das Verhalten des Elements an.  Ein Attribut ist zum Beispiel im \lstinline[language=html]{html}-Element in \autoref{lst-html-grundgeruest} zu sehen: \lstinline[language=html]{lang="de"}. Jedes Attribut besitzt einen \textbf{Attributnamen} und einen \textbf{Attributwert}. Auf den Attributnamen folgt \textbf{immer} ein \textbf{Gleichheitszeichen} (\texttt{=}). Den Attributwert notieren wir \textbf{immer} in zwei doppelten \textbf{Anführungszeichen} (\texttt{"}). Pro Element dürfen wir ein Attribut nur einmal verwenden. Zwischen zwei Attributen oder dem Elementnamen fügen wir ein Leerzeichen ein. Nicht alle Element verlangen zwingend ein Attribut. Bei vielen Elementen sind die Attribute optional. Die Reihenfolge der Attribute spielt keine Rolle.
+
+\section{\acs{HTML}-Rendering}
+
+Ein Browser ist in der Lage, \ac{HTML} anzuzeigen. Die Browser-Engine (ein Programm innerhalb des Browsers) interpretiert dabei die Elemente und Attribute. Die Engine kennt die Bedeutung der Tags und wandelt diese in die entsprechenden grafischen Darstellungen um. Dieser Vorgang wird \ac{HTML}-Rendering genannt. Wenn wir im \ac{WWW} surfen, dann lädt der Browser den Inhalt der entsprechenden \ac{HTML}-Dokumente auf unseren Computer und die Browser-Engine rendert das \ac{HTML}. Dies geschieht ganz automatisch. Oft verwenden verschiedene Browser dieselbe Engine:
+
+\begin{itemize}
+	\item Blink ist eine Browser-Engine und wird von Chrome, Opera und Microsoft Edge benutzt.
+	\item Webkit ist eine Browser-Engine und kommt bei Safari zum Einsatz.
+	\item Gecko ist eine Browser-Engine und wird bei Mozilla Firefox verwendet.
+\end{itemize}
+
+\begin{important}
+	\ac{HTML} definiert \textbf{nicht} das Aussehen einer Webseite. Wir verwenden es, um die Webseite semantisch zu strukturieren. Die grafische Darstellung wird durch den Browser durchgeführt. Er benutzt eine Standarddarstellung für die \ac{HTML}-Elemente. Mit \ac{CSS} kann man die Visualisierungen definieren.
+\end{important}
+
+\subsection{Wie viel \protect\say{Platz} benötigt ein \ac{HTML}-Element?}
+
+Bei der Darstellung der Elemente gibt es zwei grundlegende Kategorien. Die sogenannten \say{Block}-Elemente erhalten \textbf{immer} (und unabhängig vom Inhalt) die \textbf{vollständige Bildschirmbreite}. Das Element nimmt somit immer eine vollständige Zeile bei der Darstellung ein. \say{Inline}-Elemente erhalten nur so viel Platz wie nötig. Der Inhalt (etwa der Text) bestimmt somit die Breite der Darstellung. \say{Inline}-Elemente sollten nur Textinformationen oder andere \say{Inline}-Elemente enthalten.
+
+\subsection{Robustheit}
+
+Browser sind heutzutage ziemlich robust. Sie stellen auch \say{nicht} gültiges \ac{HTML} oft meist noch recht gut dar. Auch wenn wir einen Tippfehler machen, wird dies grösstenteils korrigiert und korrekt dargestellt. Wir können für jede Webseite den Quelltext, sprich den Inhalt des \ac{HTML}-Dokuments, betrachten. Jeder Browser unterstützt die Anzeige des Seitenquelltexts.
+
+\subsection{Standards}
+
+Das \ac{W3C} standardisiert \ac{HTML}. Ein Browser sollte sich dann an diesen Standard halten und standardkonforme \ac{HTML}-Dokumente gemäss den Vorgaben darstellen. \ac{HTML} 5.2 ist momentan die aktuellste Version des \ac{W3C} \ac{HTML} Standards. Unter \url{https://html5test.com} können Sie prüfen, wie gut Ihr Browser den \ac{HTML}-Standard unterstützt.

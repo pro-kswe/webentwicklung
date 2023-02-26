@@ -1,0 +1,193 @@
+%!TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{query_1}
+\chapterimagetitle{\uppercase{Query}}
+\chapterimageurl{https://xkcd.com/1409/}
+\chapterimagehover{Teil 1 des Comics.}
+
+\chapter{\acs{SQL}-Abfragen: Grundlagen}
+\label{chapter-sql-abfragen-grundlagen}
+
+In diesem Kapitel klären wir die Grundlage für Datenbankabfragen. Mit einer Datenbankabfrage (eng. database query) können wir definieren, welche Daten wir aus der Datenbank auslesen möchten. Genau für diese Aufgabe wurde \ac{SQL} erfunden, denn das \say{Q} steht für Query. Das Lernziel lautet:
+
+\newcommand{\sqlAbfragenGrundlagenLernziele}{
+\protect\begin{todolist}
+\item Sie erstellen \acs{SQL}-Abfragen mit Filterbedingungen.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-sql-abfragen-grundlagen}, \nameref{chapter-sql-abfragen-grundlagen}}{\protect\sqlAbfragenGrundlagenLernziele}
+
+\sqlAbfragenGrundlagenLernziele
+
+\begin{important}
+Eine Datenbankabfrage, meist kurz als Abfrage bezeichnet, verändert den Zustand der Datenbank nicht. Es werden keine Zeilen hinzugefügt, verändert oder gelöscht.
+\end{important}
+
+\section{Ausgabe der ganzen Tabelle}
+
+Das Beispiel in \autoref{lst-select-beispiel-1} zeigt, wie Sie alle Zeilen und alle Spalten der Tabelle anzeigen.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Das Sternchen sorgt dafür, dass alle Spalten angezeigt werden.}, label	={lst-select-beispiel-1}]
+select * from sailor;
+\end{lstlisting}
+
+Die allgemeine Schreibweise ist in \autoref{lst-select-syntax-1} zu sehen.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Der Befehl kann auch auf mehrere Zeilen verteilt werden.}, label	={lst-select-syntax-1}]
+select * from tabellenname;
+\end{lstlisting}
+
+\section{Spalten filtern}
+
+Wir können die Ausgabe auch auf einige Spalten eingrenzen. Dazu geben wir die Spaltennamen explizit an. \autoref{lst-select-beispiel-2} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Es werden alle Zeilen der Tabelle ausgegeben, jedoch nur zwei Spalten.}, label={lst-select-beispiel-2}]
+select sailor_name, age from sailor;
+\end{lstlisting}
+
+Die Ausgabe der Spalten erfolgt in derselben Reihenfolge, wie im \ac{SQL}-Befehl notiert. Spaltennamen werden durch ein Komma getrennt.
+
+\begin{important}
+Es werden keine Spalten gelöscht. Die Spalten werden nur für das Ergebnis der Abfrage temporär ausgeblendet.
+\end{important}
+
+\section{Zeilen filtern}
+
+Wir können den \ac{SQL}-Befehl erweitern, falls wir die Zeilen einer Tabelle nach Auswahlkriterien filtern möchten. Dazu fügen wir die \lstinline[language=SQL]{WHERE}-Komponente zur Abfrage hinzufügen. \autoref{lst-select-syntax-2} zeigt die allgemeine Schreibweise.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Es werden alle Zeilen der Tabelle ausgegeben, jedoch nur zwei Spalten.}, label={lst-select-syntax-2}]
+select spaltenname_1, spaltenname_2, ...
+from tabellenname
+where filterbedingung;
+\end{lstlisting}
+
+Mit der Filterbedingung definieren wir, an welchen \textbf{Zeilen} wir interessiert sind. Für jede Zeile wird die Filterbedingung überprüft. Nur wenn die Filterbedingung zutrifft (\say{true}), wird die Zeile im Ergebnis angezeigt. Trifft die Bedingung nicht zu (\say{false}), wird die Zeile im Ergebnis \textbf{nicht} angezeigt. Wenn wir die \lstinline[language=SQL]{WHERE}-Komponente weglassen, dann werden alle Zeilen angezeigt. \autoref{lst-select-beispiel-3} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Es werden nur diejenigen Zeilen angezeigt, welche ein \lstinline{rating} von mehr als \num{7} besitzen.}, label={lst-select-beispiel-3}]
+select *
+from sailor
+where rating > 7;
+\end{lstlisting}
+
+\subsection{Vergleichsoperatoren und Verknüpfungen}
+
+Die Filterbedingung kann mehrere Kriterien beinhalten. Es stehen die üblichen Vergleichsoperatoren und Verknüpfungen zur Verfügung:
+
+\begin{multicols}{3}
+\begin{itemize}
+\item \lstinline[language=SQL]{<}
+\item \lstinline[language=SQL]{<=}
+\item \lstinline[language=SQL]{>}
+\item \lstinline[language=SQL]{>=}
+\item \lstinline[language=SQL]{=}
+\item \lstinline[language=SQL]{<>} (Ungleich)
+\item \lstinline[language=SQL]{and}
+\item \lstinline[language=SQL]{or}
+\item \lstinline[language=SQL]{not}
+\end{itemize}
+\end{multicols}
+
+\autoref{lst-select-beispiel-4} zeigt, wie wir alle Seeleute mit einer Bewertung von mehr als \num{7} und mit einem Alter von mindestens \num{35} anzeigen können.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Bedingung mit \num{2} Kriterien. Beide müssen erfüllt sein, damit die Zeile angezeigt wird.}, label={lst-select-beispiel-4}]
+select *
+from sailor
+where age >= 35 and rating > 7;
+\end{lstlisting}
+
+\subsection{Filterbedingungen in Kombination mit \lstinline[language=SQL]{null}}
+
+In \ac{SQL} müssen wir Zellen, die mit \lstinline[language=SQL]{null} markiert sind, separat behandeln. Für Filterbedingungen verwenden wir deshalb in \ac{SQL} den \lstinline[language=SQL, morekeywords={real, text, is}]{is null} Operator. \autoref{lst-select-beispiel-5} zeigt ein Beispiel. Es werden alle Seeleute angezeigt, die keine Bewertung besitzen.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text, is}, caption={Für die Filterbedingung dürfen wir \textbf{nicht} das Gleichheitszeichen (\texttt{=}) verwenden.}, label={lst-select-beispiel-5}]
+select *
+from sailor
+where rating is null;
+\end{lstlisting}
+
+Wir können auch nach Zeilen filtern, welche nicht \lstinline[language=SQL, morekeywords={real, text, is}]{null} sind. Dazu verwenden wir \lstinline[language=SQL, morekeywords={real, text, is}]{is not null}. 
+
+\subsection{Filterbedingungen mit Mustersuche}
+
+Möchten wir nur diejenigen Zeilen berücksichtigen, bei denen ein Text einem gewissen Muster entspricht, dann verwenden wir den \lstinline[language=SQL, morekeywords={real, text, is}]{LIKE}-Operator und einen Platzhalter. Es gibt zwei Platzhalter, welche wir beliebig oft benutzen können:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item \lstinline[language=SQL]{%} (beliebig viele oder kein Zeichen)
+\item \lstinline[language=SQL]{_} (exakt ein Zeichen)
+\end{itemize}
+\end{multicols}
+
+Die Platzhalter sind nur in Kombination mit dem \lstinline[language=SQL, morekeywords={real, text, is}]{LIKE}-Operator zu verwenden. \autoref{lst-select-beispiel-6} sucht nach allen Seeleuten, deren Name mit einem A beginnt. Beinhaltet die Zeile zum Beispiel den Namen Alice, dann wäre dies ein \say{Treffer} und die Zeile erscheint in der Ausgabe. Der Name Bob wäre jedoch kein korrekter Name für das Muster. Deshalb würde die Zeile nicht erscheinen.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text, is}, caption={Das Prozentzeichen sorgt dafür, dass nach dem Buchstaben A ein beliebiges Zeichen folgen darf.}, label={lst-select-beispiel-6}]
+select *
+from sailor
+where sailor_name like 'A%';
+\end{lstlisting}
+
+\autoref{lst-select-beispiel-7} zeigt, wie wir auch nach dem Prozentzeichen noch Buchstaben oder Zeichen notieren können. In diesem Beispiel wäre der Name Alice nicht mehr mit dem Muster kompatibel, da der Name nicht mit einem a endet. Gibt es eine Zeile mit dem Namen Anna, dann wäre diese Zeile in der Ausgabe.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text, is}, caption={Vor und nach dem Prozentzeichen können beliebige Zeichen notiert werden. Damit können wir das Muster zum Filtern von Text noch genauer definieren.}, label={lst-select-beispiel-7}]
+select *
+from sailor
+where sailor_name like 'A%a';
+\end{lstlisting}
+
+\newpage
+
+\section{Aufgaben}
+
+Lösen Sie die Aufgaben (auch) schriftlich. Folgendes Tabellenschema ist gegeben:
+
+\begin{lstlisting}[language=SQL, morekeywords={real, text, is}]
+create table profile (
+  personal_id varchar(36) unique,
+  vorname varchar(25),
+  nachname varchar(50),
+  passwort varchar(255),
+  email varchar(255),
+  updated varchar(25),
+  staat varchar(100),
+  beziehungsstatus varchar(50),
+  automarke varchar(50),
+  arbeitgeber varchar(100)
+);
+\end{lstlisting}
+
+\textbf{Sie finden die passenden SQL-Befehle zum Erstellen der Tabelle und zum Einfügen der Daten in Teams. Kopieren Sie die Befehle und führen Sie die Befehle dann aus. Danach können Sie die Aufgaben lösen.}
+
+Der Beziehungsstatus kann wie folgt lauten:
+
+\begin{itemize}
+\item In einer Beziehung
+\item Es ist kompliziert
+\item In einer offenen Beziehung
+\item Single
+\item Verlobt
+\item Verheiratet
+\end{itemize}
+
+In der Spalte \lstinline{updated} ist das Datum der letzten Aktualisierung gespeichert. Es ist ein Text mit dem Format \texttt{YYYY-MM-DD HH:MM:SS}, also zum Beispiel \lstinline{2021-01-14 17:32:30}.
+
+Erstellen Sie für folgende Fragen die passende \ac{SQL}-Abfrage. Die \ac{SQL}-Fragen sind immer nur bezüglich des Tabellenschemas zu erstellen und nicht nur auf bereits bestehende Datensätze. Die \ac{SQL}-Abfrage muss also auch für zukünftige Datensätze funktionieren.
+
+Erstellen Sie eine \ac{SQL}-Abfrage, welche ...
+
+\begin{enumerate}
+\item ...die E-Mail-Adresse und das Passwort aller Profile ausgibt.
+
+\item ...alle Personen mit dem Staat \say{Portugal} ausgibt.
+
+\item ...alle Personen, die \say{Otto Gardner} heissen, ausgibt.
+
+\item ...alle Personen, die Single sind oder in einer offenen Beziehung leben, ausgibt.
+
+\item ...alle Personen, die zu ihrem Beziehungsstatus keine Angaben gemacht haben, ausgibt.
+
+\item ...alle Personen, die Ihr Profil zuletzt im Jahr 2020 aktualisiert haben und verheiratet sind, ausgibt.
+
+\end{enumerate}

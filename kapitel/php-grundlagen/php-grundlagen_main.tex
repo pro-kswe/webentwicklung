@@ -1,0 +1,228 @@
+%!TEX root = ../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{goto}
+\chapterimagetitle{\uppercase{Goto}}
+\chapterimageurl{https://xkcd.com/292/}
+\chapterimagehover{Neal Stephenson thinks it's cute to name his labels 'dengo'.}
+
+\chapter{\ac{PHP}-Grundlagen}
+\label{chapter-php-grundlagen}
+
+Durch die bisherigen Webseiten konnten wir keine Interaktion mit einem Benutzer erzeugen. Für jede Änderung des Inhalts mussten wir die Website anpassen. Viele moderne Websites funktionieren jedoch nicht so. Benutzer (\say{Surfer}) sollen den Inhalt einer Website mitgestalten können. Der Eintrag in einem Gästebuch oder ein Post auf Instagram erstellen sollen durch den Benutzer und nicht nur den Ersteller möglich sein. Damit dies funktioniert, müssen wir eine Programmiersprache einsetzen. Wir lernen in diesem Kapitel die Grundlagen der Webprogrammierung mit der Programmiersprache \ac{PHP}. Die Lernziele lauten:
+
+\newcommand{\phpGrundlagenLernziele}{
+\protect\begin{todolist}
+\item Sie erklären wie der \ac{PHP}-Interpreter mit dem Webserver zusammenarbeitet.
+\item Sie erklären wie der \ac{PHP}-Interpreter eine \ac{PHP}-Datei verarbeitet.
+\item Sie erklären den Unterschied zwischen einer statischen und einer dynamischen Webseite.
+\item Sie bauen \ac{PHP} in eine Webseite ein und verwenden dabei Variablen, Funktionen, Berechnungen und if-else-Anweisungen.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-php-grundlagen}, \nameref{chapter-php-grundlagen}}{\protect\phpGrundlagenLernziele}
+
+\phpGrundlagenLernziele
+
+\section{Was ist \acs{PHP}?}
+
+\ac{PHP} ist eine serverseitige, interpretierte Skriptsprache. Die Programmiersprache wird somit nicht im Browser ausgeführt, sondern auf dem Server-Host (siehe \autoref{figure-webserver-php-interpreter}). Der \ac{PHP}-Interpreter ist das Programm, welches auf dem Server-Host installiert ist und \ac{PHP}-Code interpretieren kann. Auf dem Server-Host arbeiten nun Webserver und \ac{PHP}-Interpreter zusammen, um einen Browser-Request zu verarbeiten.
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+	\draw[fill=lightgray] (0,0) rectangle (5,4);
+	\draw[fill=cyan!50, solid] (0.5,1) rectangle (4.5,3.5);
+	\draw[fill=white, solid] (0.5,3) rectangle (4.5,3.5);
+	\node[text width=4cm, align=center] (browser) at (2.5, 2) {Safari};
+	\node[text width=4cm, align=center] at (2.5, 0.75) {Browser (\ac{WWW}-Client)};
+	\node at (2.5, 3.25) {\tiny\url{http://webdev.ginf.ch}};
+	\node[text width=4cm, align=center] at (2.5, -0.5) {Bobs Computer \\ (Client-Host)};
+	
+	\draw[fill=lightgray] (8,0) rectangle (15,4);
+	\draw[fill=cyan!50, solid] (8.5,1) rectangle (11.5,3.5);
+	\node[text width=3cm, align=center] (webserver) at (10, 2.25) {Apache HTTP Server};
+	\node[text width=4cm, align=center] at (10.5, 0.75) {Webserver};
+	\node[text width=4cm, align=center] at (11.5, -0.5){\url{code-yard.org} \\ (Server-Host)};
+	
+	\draw[fill=yellow!50, solid] (13,1) rectangle (14.5,3.5);
+	\node[text width=4cm, align=center, rotate=90] (phpinterpreter) at (13.75, 2.25) {\ac{PHP}-Interpreter};
+	
+	\draw[thick, solid, -Triangle] (5,3) -- (8,3) node[midway, above] {Request};
+	\draw[thick, solid, Triangle-] (5,1) -- (8,1) node[midway, below] {Response};
+	
+	\draw[thick, solid, -Triangle] (11.5,2.5) -- (13,2.5);
+	\draw[thick, solid, Triangle-] (11.5,1.5) -- (13,1.5);
+
+
+\end{tikzpicture}
+\caption{Zusammenspiel von Browser, Webserver und \ac{PHP}-Interpreter.}
+\label{figure-webserver-php-interpreter}
+\end{figure}
+
+\section{Was ist eine \acs{PHP}-Datei?}
+
+Eine \ac{PHP}-Datei besitzt die Dateinamen-Erweiterung \texttt{.php} und kann \ac{PHP}-Code beinhalten. Nutzt man \ac{PHP} als Templatesprache\footnote{So wie in diesen Unterlagen.}, dann besteht eine \ac{PHP}-Datei grösstenteils aus \ac{HTML}-Code. Durch den Einsatz der \ac{PHP}-Datei haben wir nun jedoch die Möglichkeit, in den \ac{HTML}-Code PHP-Abschnitte einzufügen. Diese \ac{PHP}-Abschnitte werden durch den PHP-Interpreter verarbeitet. Den \ac{HTML}-Code ausserhalb von den \ac{PHP}-Abschnitten verändert der \ac{PHP}-Interpreter nicht. Er gibt den \ac{HTML}-Code unverändert an den Webserver zurück.
+
+\section{Was ist ein \acs{PHP}-Abschnitt?}
+
+Ein \ac{PHP}-Abschnitt beginnt immer mit dem öffnenden \ac{PHP}-Tag \lstinline{<?php} und endet mit dem schliessenden \ac{PHP}-Tag \lstinline{?>}. Es ist wichtig, dass hinter \lstinline{<?php} ein Leerraum steht (Leerzeichen, Tabulator oder Zeilenumbruch), andernfalls wird das öffnende \ac{PHP}-Tag nicht erkannt. Durch die \ac{PHP}-Tags kann der \ac{PHP}-Interpreter \ac{HTML}-Code von \ac{PHP}-Code unterscheiden. Nur der Code innerhalb von \ac{PHP}-Tags wird durch den \ac{PHP}-Interpreter verarbeitet. \autoref{lst-php-example} zeigt ein Beispiel mit einem  \ac{PHP}-Abschnitt.
+
+
+\begin{lstlisting}[language=PHP, alsolanguage=HTML, caption={Beispiel für eine \ac{PHP}-Datei.}, label={lst-php-example}]
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>PHP Demo</title>
+</head>
+<body>
+<h1>Dies ist ein Test.</h1>
+<p>
+   Diese Seite wurde abgerufen am:
+   <?php
+   $zeitpunkt = date("d.m.Y H:i:s");
+   echo $zeitpunkt;
+   ?>
+</p>
+</body>
+</html>
+\end{lstlisting}
+
+\begin{important}[\ac{PHP}-Abschnitte]
+	Wir können an beliebigen Stellen einen \ac{PHP}-Abschnitt einbauen und beliebig viele \ac{PHP}-Abschnitte erstellen. Alle \ac{PHP}-Abschnitte werden nacheinander, von oben nach unten, verarbeitet.
+\end{important}
+
+\begin{hinweis}
+	In \ac{PHP} sind Variablennamen \textbf{case sensitive} (die Gross- und Kleinschreibung spielt eine Rolle) und beginnen immer mit einem Dollarzeichen (\texttt{\$}). Funktionsnamen (wie zum Beispiel \lstinline{date}) sind jedoch \textbf{case insensitive}. Sowohl \lstinline{date} als auch \lstinline{DATE} bezeichnen dieselbe Funktion. 
+\end{hinweis}
+
+\section{Wie wird \ac{PHP} verarbeitet?}
+
+Wenn der Browser vom Webserver eine Datei anfordert, muss der Webserver entscheiden, ob der \ac{PHP}-Interpreter eingesetzt werden muss. Typischerweise wird dies aufgrund der Dateinamen-Erweiterung entschieden.
+
+\begin{itemize}
+	\item Fall A (\textbf{ohne} \ac{PHP}-Interpreter): Beinhaltet der Browser-Request die Anfrage nach einer \ac{HTML}-Datei, dann wird die \ac{HTML}-Datei von der Festplatte geladen und der Inhalt \textbf{direkt} und \textbf{ohne} \ac{PHP}-Interpreter an den Client in einer Response geschickt. Dies entspricht dem Ablauf aus \autoref{figure-webserver-fall-a}. Der Inhalt der \ac{HTML}-Datei wird kopiert und unverändert zurückgeschickt.
+	
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+	\draw[fill=lightgray] (0,1) rectangle (5,5);
+	\draw[fill=cyan!50, solid] (0.5,2) rectangle (4.5,4.5);
+	\draw[fill=white, solid] (0.5,4) rectangle (4.5,4.5);
+	\node[text width=4cm, align=center] (browser) at (2.5, 3) {Safari};
+	\node[text width=4cm, align=center] at (2.5, 1.75) {Browser (\acs{WWW}-Client)};
+	\node at (2.5, 4.25) {\tiny\url{http://alice.code-yard.org}};
+	\node[text width=4cm, align=center] at (2.5, 0.5) {Bobs Computer \\ (Client-Host)};
+	
+	\draw[fill=lightgray] (8,0) rectangle (15,7);
+	\draw[fill=cyan!50, solid] (8.5,4) rectangle (11.5,6.5);
+	\node[text width=3cm, align=center] (webserver) at (10, 5.25) {Apache \\ \acs{HTTP} \\ Server};
+	\node[text width=4cm, align=center] at (10.5, 6.75) {Webserver};
+	\node[text width=4cm, align=center] at (11.5, -0.5){\url{code-yard.org} \\ (Server-Host)};
+	
+	\draw[fill=yellow!50, solid] (13,4) rectangle (14.6,6.5);
+	\node[text width=4cm, align=center, rotate=90] (phpinterpreter) at (13.75, 5.25) {\acs{PHP}-Interpreter};
+	
+	\draw[thick, solid, -Triangle, sloped] (4.5,4) -- (8.5,6) node[midway, above] {\circled{1} Request} node[midway, below] {index.html};
+	\draw[thick, solid, -Triangle, sloped] (8.5,4.5) -- (4.5,2.5) node[midway, above] {\circled{4} Response} node[midway, below] {\acs{HTML}-Code};
+
+	
+	\draw[fill=gray, dashed] (10.5,0.5) rectangle (13.25,2.25);
+	\draw[fill=white, solid] (10.75,0.75) -- (10.75,2) -- (11.5,2) -- (11.75,1.75) -- (11.75,0.75) -- (10.75,0.75);
+	\draw[fill=white, solid] (12,0.75) -- (12,2) -- (12.75,2) -- (13,1.75) -- (13,0.75) -- (12,0.75);
+	\node[rotate=60, text width=2cm, align=center] at (11.2, 1.4) {\tiny\texttt{index.html}};
+	\node[rotate=60, text width=2cm, align=center] at (12.5, 1.4) {\tiny\texttt{demo.php}};
+	\node[rotate=90, text width=2cm, align=center] at (13.5, 1.4) {Festplatte};
+	
+	\draw[thick, solid, -Triangle, sloped] (9,4) -- (10.75,2) node[midway, below] {\circled{2} Suche};
+	
+	\draw[thick, solid, -Triangle] (11,2) -- (11,4) node[midway, right] {\circled{3} Lade};
+
+\end{tikzpicture}
+\caption{Ablauf eines Browser-Requests für eine \protect\acs{HTML}-Datei.}
+\label{figure-webserver-fall-a}
+\end{figure}
+	
+	\item Fall B (\textbf{mit} \ac{PHP}-Interpreter): Falls der Browser-Request eine Anfrage nach einer \ac{PHP}-Datei beinhaltet (siehe \autoref{figure-webserver-fall-b}), dann wird auf der Festplatte die entsprechende \ac{PHP}-Datei gesucht. Anschliessend wird der Inhalt der \ac{PHP}-Datei zur Verarbeitung an den \ac{PHP}-Interpreter geschickt. Dieser verarbeitet den Inhalt und leitet das Ergebnis an den Webserver zurück. Das Ergebnis des \ac{PHP}-Interpreters ist \ac{HTML}-Code. Der Webserver nimmt das Resultat und beantwortet den Request mit einer Response und verpackt darin den \ac{HTML}-Code.
+\end{itemize}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+	\draw[fill=lightgray] (0,1) rectangle (5,5);
+	\draw[fill=cyan!50, solid] (0.5,2) rectangle (4.5,4.5);
+	\draw[fill=white, solid] (0.5,4) rectangle (4.5,4.5);
+	\node[text width=4cm, align=center] (browser) at (2.5, 3) {Safari};
+	\node[text width=4cm, align=center] at (2.5, 1.75) {Browser (\acs{WWW}-Client)};
+	\node at (2.5, 4.25) {\tiny\url{http://alice.code-yard.org}};
+	\node[text width=4cm, align=center] at (2.5, 0.5) {Bobs Computer \\ (Client-Host)};
+	
+	\draw[fill=lightgray] (8,0) rectangle (15,7);
+	\draw[fill=cyan!50, solid] (8.5,4) rectangle (11.5,6.5);
+	\node[text width=3cm, align=center] (webserver) at (10, 5.25) {Apache \\ \acs{HTTP} \\ Server};
+	\node[text width=4cm, align=center] at (10.5, 6.75) {Webserver};
+	\node[text width=4cm, align=center] at (11.5, -0.5){\url{code-yard.org} \\ (Server-Host)};
+	
+	\draw[fill=yellow!50, solid] (13,4) rectangle (14.6,6.5);
+	\node[text width=4cm, align=center, rotate=90] (phpinterpreter) at (13.75, 5.25) {\acs{PHP}-Interpreter};
+	
+	\draw[thick, solid, -Triangle, sloped] (4.5,4) -- (8.5,6) node[midway, above] {\circled{1} Request} node[midway, below] {demo.php};
+	\draw[thick, solid, -Triangle, sloped] (8.5,4.5) -- (4.5,2.5) node[midway, above] {\circled{6} Response} node[midway, below] {\acs{HTML}-Code};
+	
+	\draw[thick, solid, -Triangle] (11,5.5) -- (13,5.5) node[midway, above, fill=white, rounded corners=1pt, inner sep=1pt, yshift=0.1cm] {\circled{4} Inhalt};
+	
+	\draw[fill=gray, dashed] (10.5,0.5) rectangle (13.25,2.25);
+	\draw[fill=white, solid] (10.75,0.75) -- (10.75,2) -- (11.5,2) -- (11.75,1.75) -- (11.75,0.75) -- (10.75,0.75);
+	\draw[fill=white, solid] (12,0.75) -- (12,2) -- (12.75,2) -- (13,1.75) -- (13,0.75) -- (12,0.75);
+	\node[rotate=60, text width=2cm, align=center] at (11.2, 1.4) {\tiny\texttt{index.html}};
+	\node[rotate=60, text width=2cm, align=center] at (12.5, 1.4) {\tiny\texttt{demo.php}};
+	\node[rotate=90, text width=2cm, align=center] at (13.5, 1.4) {Festplatte};
+	
+	\draw[thick, solid, -Triangle, sloped] (9,4) -- (10.75,2) node[midway, below] {\circled{2} Suche};
+	
+	\draw[thick, solid, -Triangle] (11,2) -- (11,5.5) node[near start, right] {\circled{3} Lade};
+	
+	\draw[thick, solid, Triangle-] (8.5,4.5) -- (13,4.5)  node[midway, below, fill=white, rounded corners=2pt, inner sep=1pt, yshift=-0.1cm] {\circled{5} Ergebnis: \acs{HTML}-Code};
+
+\end{tikzpicture}
+\caption{Ablauf eines Browser-Requests für eine \protect\acs{PHP}-Datei.}
+\label{figure-webserver-fall-b}
+\end{figure}
+
+\begin{important}
+	Der \ac{PHP}-Interpreter bearbeitet \textbf{nur} \ac{PHP}-Abschnitte. \ac{HTML}-Code wird $1:1$ in das Ergebnis des \ac{PHP}-Interpreters kopiert. Besitzt ein \ac{PHP}-Abschnitt einen \texttt{echo}-Befehl, dann wird die Ausgabe ebenfalls ins Ergebnis aufgenommen. Alle \ac{PHP}-Befehle werden \textbf{nicht} ins Ergebnis aufgenommen.
+\end{important}
+
+Der Inhalt der Response kann nun durch den \ac{PHP}-Interpreter generiert und nicht einfach durch eine Inhaltskopie der \ac{HTML}-Datei erzeugt werden. Der \ac{PHP}-Interpreter ist zunächst passiv. Der Webserver initiiert die Ausführung des \ac{PHP}-Interpreters. 
+
+\begin{example}[\ac{PHP}-Interpreter Ergebnis] \autoref{lst-php-interpreter-output} zeigt das Ergebnis, wenn der \ac{PHP}-Interpreter die \ac{PHP}-Datei aus \autoref{lst-php-example} verarbeitet hat. Das Resultat ist \say{nur} noch \acs{HTML}.
+
+\begin{lstlisting}[language=HTML, caption={Durch den \lstinline{echo}-Befehl wird für den \ac{PHP}-Abschnitt eine Ausgabe erzeugt.}, label={lst-php-interpreter-output}]
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>PHP Demo</title>
+</head>
+<body>
+<h1>Dies ist ein Test.</h1>
+<p>
+   Diese Seite wurde abgerufen am: 06.09.2021 11:54:08
+</p>
+</body>
+</html>
+\end{lstlisting}
+
+\end{example}
+
+Die \ac{PHP}-Abschnitte sollten gültiges \ac{HTML} erzeugen, damit der Browser die Response korrekt rendern kann.
+
+\section{Was ist eine dynamische Website?}
+
+Der Ablauf aus \autoref{figure-webserver-fall-b} zeigt auch, dass jedes Mal, wenn wir eine Webseite mit \ac{PHP}-Code aufrufen (z.B. auch durch einen Browser-Refresh), der \ac{PHP}-Interpreter ausgeführt wird. Eine Webseite, welche durch den \ac{PHP}-Interpreter erzeugt wird (wenn auch nur teilweise), bezeichnen wir als \textbf{dynamische} Webseite. Bei einer \textbf{statischen} Webseite wird lediglich der Inhalt der bereits fertig existierenden \ac{HTML}-Datei an den Browser übertragen. Nur dynamische Webseiten erlauben es, dass der Benutzer den Inhalt einer Webseite mitgestalten kann. Denn durch die Verwendung einer Programmiersprache (wie \ac{PHP}) können wir zum Beispiel Inhalte aus Datenbanken (welche sich ändern können) in die Webseite einbinden.
+
+\section{Wie geht es weiter?}
+
+Wir schauen uns nun die Grundlagen der Programmierung in \ac{PHP} an. Unter \url{php.ginf.ch} gibt es eine Zusammenfassung der grundlegenden Konzepte (Ausgabe, Variablen, Berechnungen, Funktionen und bedingte Anweisungen). Anschliessend betrachten wir, wie wir mit \ac{PHP} die Benutzereingaben aus einem Formular auswerten. Ausserdem schauen wir uns an, wie wir mit \ac{PHP} Cookies verarbeiten. Möchten Sie jedoch vertieft mit \ac{PHP} auseinandersetzen, dann empfehlen wir alternative Literatur.

@@ -1,0 +1,16 @@
+drop table if exists mitarbeiter cascade;
+
+create table mitarbeiter (
+    panr         int unique  not null,
+    fachbereich  varchar(50) not null,
+    monatsgehalt int         not null,
+    raum         varchar(50)
+);
+
+insert into mitarbeiter
+values (4711, 'Informatik', 6000, 209),
+       (5588, 'Informatik', 6000, 304),
+       (6834, 'Mathematik', 750, 309),
+       (7754, 'Informatik', 550, 218),
+       (8832, 'Informatik', 2800, 302),
+       (9912, 'Linguistik', 2600, 008);

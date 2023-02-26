@@ -1,0 +1,66 @@
+-- Aufgabe 1
+
+select color, count(color) as anzahl
+from boat
+group by color
+
+oder
+
+select color, count(*) as anzahl
+from boat
+group by color
+
+-- Aufgabe 2
+
+select beziehungsstatus, count(personal_id)
+from profile
+group by beziehungsstatus
+
+oder
+
+select beziehungsstatus, count(*)
+from profile
+group by beziehungsstatus
+
+-- Aufgabe 3
+
+select arbeitgeber, staat, count(personal_id)
+from profile
+group by arbeitgeber, staat
+
+oder
+
+select arbeitgeber, staat, count(*)
+from profile
+group by arbeitgeber, staat
+
+-- Aufgabe 4
+
+select fachbereich, avg(monatsgehalt)
+from mitarbeiter
+group by fachbereich
+having avg(monatsgehalt) > 1000
+
+-- Aufgabe 5
+
+select fachbereich, avg(monatsgehalt)
+from mitarbeiter
+where fachbereich like '%a%'
+group by fachbereich
+having sum(monatsgehalt) >= 200 and sum(monatsgehalt) <= 12000
+
+-- Aufgabe 6
+
+select vorname, count(vorname)
+from profile
+where vorname like '%c%'
+group by vorname
+having count(vorname) > 1
+
+oder
+
+select vorname, count(*)
+from profile
+where vorname like '%c%'
+group by vorname
+having count(vorname) > 1

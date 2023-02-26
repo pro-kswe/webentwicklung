@@ -1,0 +1,58 @@
+drop table if exists booking cascade;;
+drop table if exists sailor cascade;
+drop table if exists boat cascade;
+
+create table sailor
+(
+    sailor_id   varchar(100) unique not null,
+    sailor_name text,
+    rating      int,
+    age         int
+);
+
+create table boat
+(
+    boat_id   varchar(100) unique not null,
+    boat_name text                not null,
+    color     text                not null
+);
+
+create table booking (
+                         sailor_id varchar(100) not null,
+                         boat_id varchar(100) not null,
+                         tag varchar(50) not null,
+                         foreign key (sailor_id) references sailor(sailor_id),
+                         foreign key (boat_id) references boat(boat_id)
+);
+
+
+insert into sailor
+values ('s_22', 'Dustin', 7, 45),
+       ('s_29', 'Brutus', 1, 33),
+       ('s_31', 'Lubber', 8, 55),
+       ('s_32', 'Andy', 8, 25),
+       ('s_58', 'Rusty', 10, 35),
+       ('s_64', 'Horatio', 7, 35),
+       ('s_71', 'Zorba', 10, 16),
+       ('s_74', 'Horatio', 9, 35),
+       ('s_85', 'Art', 3, 25),
+       ('s_95', 'Bob', 3, 63),
+       ('s_99', 'Ghost', NULL, 99);
+
+insert into boat
+values ('b_101', 'Interlake', 'blue'),
+       ('b_102', 'Interlake', 'red'),
+       ('b_103', 'Clipper', 'green'),
+       ('b_104', 'Marine', 'red'),
+       ('b_105', 'Titanic', 'rusty'),
+       ('b_106', 'Santa Maria', 'brown'),
+       ('b_107', 'Victoria', 'blue'),
+       ('b_108', 'Queen', 'red'),
+       ('b_109', 'King', 'red');
+
+insert into booking
+values ('s_22', 'b_101', '01-01-2023'),
+       ('s_22', 'b_102', '02-01-2023'),
+       ('s_29', 'b_101', '02-01-2023'),
+       ('s_71', 'b_108', '03-01-2023'),
+       ('s_64', 'b_105', '03-01-2023');

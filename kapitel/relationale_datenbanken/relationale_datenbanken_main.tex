@@ -1,0 +1,136 @@
+%!TEX root = ../../main.tex
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{old_accounts}
+\chapterimagetitle{\uppercase{Old Accounts}}
+\chapterimageurl{https://xkcd.com/1250/}
+\chapterimagehover{\tiny If you close an account while it's still friends with people, it contributes to database linkage accumulation slowdown, which is a major looming problem for web infrastructure and definitely not a thing I just made up.}
+
+\chapter{Relationale Datenbanken}
+\label{chapter-relationale-datenbanken}
+
+Bei vielen Webseiten möchte man Informationen dauerhaft speichern. Man möchte sich zum Beispiel nur einmal in einem sozialen Netzwerk registrieren und die Website soll sich das Profil und alle damit verbundenen Einstellungen merken. Das dauerhafte Speichern von Informationen kann durch Datenbanken erfolgen. In einer Datenbank werden Informationen strukturiert gespeichert und können relativ einfach bearbeitet werden. Wir schauen uns nun die relationalen Datenbanken genauer an. Bei diesem Datenbanktyp werden Informationen tabellarisch gespeichert. Lernziele:
+
+\newcommand{\relationaleDatenbankenLernziele}{
+\protect\begin{todolist}
+\item Sie erklären was eine relationale Datenbank ist und wozu man diese einsetzen kann.
+\item Sie erklären den Unterschied zwischen einer Datenbank und einem \ac{DBMS}.
+\item Sie skizzieren den Client-Host und Server-Host im Zusammenhang mit einem \ac{DBMS}.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-relationale-datenbanken}, \nameref{chapter-relationale-datenbanken}}{\protect\relationaleDatenbankenLernziele}
+
+\relationaleDatenbankenLernziele
+
+\section{Grundbegriffe}
+
+Es gibt zahlreiche Datenbanken mit unterschiedlichen Technologien. Wir fokussieren uns auf relationale Datenbanken, welche bereits seit 1970 existieren und ziemlich populär sind\footnote{TOP-4 im \say{Datenbanken-Ranking} sind relationale Datenbanken (\url{https://db-engines.com/de/ranking}).}.
+
+\begin{definition}[Relationale Datenbank]
+Unter einer relationalen Datenbank versteht man (vereinfacht gesagt) eine Sammlung von Tabellen (eng. tables), in denen die Informationen gespeichert sind. Eine Tabelle besteht aus Zeilen (eng. rows) und Spalten (eng. columns).
+\end{definition}
+
+Wie bei den Handyaboanbietern, gibt es auch bei den relationalen Datenbanken verschiedene Anbieter. Die populärsten sind Oracle, MySQL, Microsoft SQL Server und PostgreSQL. Bei Instagram kommt zum Beispiel PostgreSQL zum Einsatz\footnote{Siehe \url{https://instagram-engineering.com/tagged/data}.}. Einige Datenbanken sind kostenpflichtig (z.B. Oracle) andere können gratis benutzt werden. Wir verwenden MariaDB. Dies ist eine freie, relationale Open-Source-Datenbank. MariaDB ist aus MySQL entstanden und wird immer populärer. Ein weiterer Vorteil der relationalen Datenbanken ist die gute Integration mit \ac{PHP} und anderen Tools (z.B. PhpStorm). So kann auch MariaDB einfach mit \ac{PHP} und PhpStorm bedient werden.
+
+\section{Datenbank vs. \acl{DBMS}}
+
+Umgangssprachlich wird häufig der Begriff Datenbank verwendet, wenn es darum geht, Informationen dauerhaft zu speichern. Wenn man genau ist, dann gibt es ein Programm, welches die Informationen verwaltet und die Datenbank ist \say{nur} eine Sammlung von Dateien auf der Festplatte.
+
+\begin{definition}[Datenbankverwaltungssystem]
+Ein Datenbankverwaltungssystem (engl. \acl{DBMS}) ist ein \textbf{Programm}, welches einen Dienst im Netzwerk anbietet. Das \ac{DBMS} ist also ein Server. Das \ac{DBMS} ist in der Lage, Datenbankbefehle zu verarbeiten und mit der Datenbank zu arbeiten. Als Datenbank bezeichnen wir die strukturierten Dateien auf der Festplatte. Diese Dateien beinhalten die eigentlichen Daten. Bei einer relationalen Datenbank beinhalten die Dateien die Tabellen. Das \ac{DBMS} kümmert sich um das Verwalten dieser Dateien (z.B. Dateien erstellen und aktualisieren).
+\end{definition}
+
+MariaDB ist somit streng genommen somit keine Datenbank, sondern ein \ac{DBMS}. In der Umgangssprache macht man jedoch häufig nicht diese Unterscheidung. Man spricht auch meist von einem Datenbank-Server, wobei hier die Bezeichnung \ac{DBMS} bereits völlig ausreichend wäre.
+
+\section{Webserver, \ac{PHP}-Interpreter und \ac{DBMS}}
+
+Das \ac{DBMS} ist ein Server. Es ist ein Programm, welches typischerweise auf einem Server-Host ausgeführt wird, auf dem auch der Webserver ausgeführt wird. Das \ac{DBMS} kann Datenbankbefehle verarbeiten und schickt als Antwort eine Tabelle. Man kann mit dem \ac{DBMS} direkt kommunizieren, in dem man einen \ac{DBMS}-Client verwendet. Das \say{Database Tab} von PhpStorm ist quasi ein Client.
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[ database/.style={
+      cylinder,
+      cylinder uses custom fill,
+      cylinder body fill=white,
+      cylinder end fill=white,
+      shape border rotate=90,
+      aspect=0.25,
+      draw
+    }]
+	\draw[fill=lightgray] (0,-2) rectangle (5,8);
+	
+	\draw[fill=purple!50, solid] (0.5,3) rectangle (4.5,4);
+	\node[text width=4cm, align=center] (phpstorm) at (2.5, 3.5) {PhpStorm \\\ (Remote Host Tab)};
+	\node[text width=4cm, align=center] at (3.5, 2.75) {Client (\acs{FTP})};
+	
+	\draw[fill=orange!50, solid] (0.5,1) rectangle (4.5,2);
+	\node[text width=4cm, align=center] (phpstormDB) at (2.5, 1.5) {PhpStorm \\\ (Database Tab)};
+	\node[text width=4cm, align=center] at (3.25, 0.75) {Client (\ac{DBMS})};
+	
+	\draw[fill=cyan!50, solid] (0.5,5) rectangle (4.5,7.5);
+	\draw[fill=white, solid] (0.5,7) rectangle (4.5,7.5);
+	\node[text width=4cm, align=center] (browser) at (2.5, 6) {Safari};
+	\node[text width=4cm, align=center] at (2.5, 4.75) {Browser (\ac{WWW}-Client)};
+	\node at (2.5, 7.25) {\tiny\url{http://alice.code-yard.org}};
+
+
+	\draw[fill=gray, dashed] (0.5,-1.75) rectangle (3.25,0);
+	\draw[fill=white, solid] (0.75,-1.5) -- (0.75,-0.25) -- (1.5,-0.25) -- (1.75,-0.5) -- (1.75,-1.5) -- (0.75,-1.5);
+	\draw[fill=white, solid] (2,-1.5) -- (2,-0.25) -- (2.75,-0.25) -- (3,-0.5) -- (3,-1.5) -- (2,-1.5);
+	\node[rotate=60, text width=2cm, align=center] at (1.2, -0.8) {\tiny\texttt{index.php}};
+	\node[rotate=60, text width=2cm, align=center] at (2.5, -0.8) {\tiny\texttt{demo.php}};
+	\node[rotate=90, text width=2cm, align=center] at (3.5, -0.8) {Festplatte};
+	
+	\node[text width=4cm, align=center] at (2.5, -2.5) {Bobs Computer \\ (Client-Host)};
+	
+	\draw[fill=lightgray] (9,-4) rectangle (15,8);
+	
+	\draw[fill=purple!50, solid] (9.5,3) rectangle (14.5,4);
+	\node[text width=4cm, align=center] (ftpserver) at (12, 3.5) {Pure-FTPd};
+	\draw[thick, purple, -Triangle] (phpstorm.east) -- (9.5,3.5) node[midway, above] {Upload};
+		
+	\node[text width=4cm, align=center] at (13.5, 2.75) {\acs{FTP}-Server};
+			
+	\draw[fill=cyan!50, solid] (9.5,5) rectangle (14.5,7.5);
+	\node[text width=4cm, align=center] (webserver) at (12, 6.25) {Apache HTTP Server};
+	\node[text width=4cm, align=center] at (13.4, 4.75) {Webserver};
+	
+	\draw[thick, cyan, -Triangle] (browser.north east) -- (9.5,7) node[midway, above] {Request};
+		
+	\draw[thick, cyan, -Triangle] (webserver.south west) -- (browser.south east) node[midway, above] {Response};
+		
+	\node[text width=4cm, align=center] at (12.5, -4.5){\url{code-yard.org} \\ (Server-Host)};
+	
+	\draw[fill=yellow!50, solid] (9.5,1) rectangle (14.5,2);
+	\node[text width=4cm, align=center] (phpinterpreter) at (12, 1.5) {\ac{PHP}-Interpreter};
+	
+	\draw[fill=orange!50, solid] (9.5,-0.5) rectangle (14.5,0.5);
+	\node[text width=4cm, align=center] (dbms) at (12, 0) {MariaDB};
+	\node[text width=4cm, align=center] at (13.75, -0.75) {\ac{DBMS}};
+	
+	\draw[fill=gray, dashed] (9.5,-3.5) rectangle (14.5,-1.5);
+	\draw[fill=white, solid] (9.75,-3.25) -- (9.75,-1.75) -- (10.5,-1.75) -- (10.75,-2) -- (10.75,-3.25) -- (9.75,-3.25);
+	\draw[fill=white, solid] (11,-3.25) -- (11,-1.75) -- (11.75,-1.75) -- (12,-2) -- (12,-3.25) -- (11,-3.25);
+	\node[rotate=60, text width=2cm, align=center] at (10.2, -2.5) {\tiny\texttt{index.php}};
+	\node[rotate=60, text width=2cm, align=center] at (11.5, -2.5) {\tiny\texttt{demo.php}};
+	\node[rotate=90, text width=2cm, align=center] at (14.75, -2.5) {Festplatte};
+	
+	\node[database] (db) at (13.25,-2.75) {Datenbank};
+	
+	\draw[thick, orange, -Triangle, sloped] (4.5,1.75) -- (9.5,0.25) node[midway, above] {Datenbankbefehl};
+	
+	\draw[thick, orange, Triangle-, sloped] (4.5,1.25) -- (9.5,-0.25) node[midway, below] {Tabelle};
+	
+	\draw[thick, Triangle-] (10.5, 5) -- (10.5,2);
+	\draw[thick, -Triangle] (10, 5) -- (10,2);
+	
+	\draw[thick, -Triangle] (12.5, 1) -- (12.5,0.5) node[midway, left] {Datenbankbefehl};
+	\draw[thick, Triangle-] (13, 1) -- (13,0.5) node[midway, right] {Tabelle};
+	
+	\draw[thick, Triangle-Triangle] (12, -0.5) -- (12.5,-2) node[near start, left] {Dateioperationen};
+\end{tikzpicture}
+\end{figure}
+
+Ein Benutzer der Website tippt jedoch keine Datenbankbefehle ein, um sich zum Beispiel für eine Free-Walking-Tour anzumelden. Datenbankbefehle können in \ac{PHP}-Code eingebettet werden. Der \ac{PHP}-Interpreter verarbeitet den \ac{PHP}-Code und schickt die Datenbankbefehle im \ac{PHP}-Code an das \ac{DBMS}. Das \ac{DBMS} verarbeitet die Datenbankbefehle und gibt das Ergebnis (Tabellen) an den \ac{PHP}-Interpreter zur Weiterverarbeitung zurück.
+

@@ -1,0 +1,91 @@
+%!TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{spreadsheets_2x}
+\chapterimagetitle{\uppercase{Spreadsheets}}
+\chapterimageurl{https://xkcd.com/2180/}
+\chapterimagehover{\tiny My brother once asked me if there was a function to produce a calendar grid from a list of dates in Google Sheets. I replied with a single-cell formula that took in a list of dates and outputted a calendar. It used SEQUENCE(), REGEXMATCH(), and a double-nested ARRAYFORMULA(), and it locked up the browser for 15 seconds every time it ran. I think he learned a lot about asking me things.}
+
+\chapter{Daten mit \acs{SQL} einfügen}
+\label{chapter-daten-einfuegen-sql}
+
+Das Einfügen von Daten in eine Tabelle erfolgt mit einem separaten \ac{SQL}-Befehl. Zuvor müssen wir die Tabelle mit dem passenden Befehl aus \autoref{chapter-tabellen-erstellen-sql} erstellen, dann können wir den \lstinline[language=SQL]{insert into}-Befehl einsetzen. Das Lernziel lautet:
+
+\newcommand{\datenMitSqlEinfuegenLernziele}{
+\protect\begin{todolist}
+\item Sie fügen Daten in eine existierende Tabelle mit \acs{SQL} ein.
+\end{todolist}
+}
+
+\lernziel{\autoref{chapter-daten-einfuegen-sql}, \nameref{chapter-daten-einfuegen-sql}}{\protect\datenMitSqlEinfuegenLernziele}
+
+\datenMitSqlEinfuegenLernziele
+
+\section{Daten einfügen}
+
+Mit dem \lstinline{insert into}-Befehl können wir in eine bestehende Tabelle eine neue Zeile einfügen. \autoref{lst-insert-into-beispiel-1} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Eine neue Zeile in die Tabelle \lstinline{anmeldung} einfügen.}, label={lst-insert-into-beispiel-1}]
+insert into anmeldung (vorname,tour,anzahl,email,passwort) 
+values ('Bob', 'city', 2, 'bob@mail.ch', 'secret42');
+\end{lstlisting}
+
+Die allgemeine Schreibweise für den \lstinline[language=sql]{insert into}-Befehl ist in \autoref{lst-syntax-insert-into} abgedruckt. Die Spaltennamen und Werte werden durch ein \textbf{Komma} getrennt. Das Leerzeichen nach dem Komma ist optional. Text (egal ob die Spalte den Datentyp \lstinline[language=SQL, morekeywords={real, text}]{text} oder \lstinline[language=SQL, morekeywords={real, text}]{varchar} besitzt) muss in \textbf{einfachen} Anführungszeichen (\lstinline[language=SQL, upquote=true]{'}) notiert werden. Der Befehl wird mit einem Semikolon abgeschlossen.
+
+\begin{lstlisting}[language=SQL, morekeywords={real, text}, caption={Die Reihenfolge der Spaltennamen und Werte spielt eine Rolle. Der erste Wert wird in die erste Spalte eingefügt. Der zweite Wert in die zweite Spalte usw.}, label={lst-syntax-insert-into}]
+insert into tabellenname (name_1,  name_2, ..., name_n)
+values (wert_1, wert_2, ..., wert_n);
+\end{lstlisting}
+
+\section{Wie wird der Befehl ausgeführt?}
+
+Jedes Mal, wenn wir einen \lstinline[language=sql]{insert into}-Befehl ausführen, dann verarbeitet das \ac{DBMS} den \ac{SQL}-Befehl. Die Zeile wird nur dann in die Tabelle eingefügt, wenn alle Bedingungen der Tabelle erfüllt sind. Beim Erstellen der Tabelle werden die Bedingungen formuliert. Wir haben folgende Bedingungen kennengelernt:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item \lstinline[language=sql]{not null}
+\item \lstinline[language=sql]{unique}
+\end{itemize}
+\end{multicols}
+
+Das \ac{DBMS} prüft beim Verarbeiten des \lstinline[language=sql]{insert into}-Befehls pro Spalte diese Bedingungen. Nur wenn keine Bedingung verletzt ist, wird die Zeile eingefügt. Wenn wir also den Befehl zwei Mal ausführen, dann kann es sein, dass beim zweiten Mal eine Bedingung verletzt ist (z.B. \lstinline[language=sql]{unique}) und es einen Fehler bei der Ausführung gibt. Das \ac{DBMS} fügt die Zeile dann \textbf{nicht} ein.
+
+\begin{important}
+Noch einmal zur Wiederholung. \ac{SQL}-Schlüsselwörter (z.B. \lstinline[language=sql]{insert}) sind \textbf{case insensitive} (Gross- und Kleinschreibung spielt keine Rolle). Tabellennamen, Spaltennamen und Text (z.B. \lstinline{anmeldung}) sind jedoch \textbf{case sensitive} (Gross- und Kleinschreibung macht einen Unterschied).
+\end{important}
+
+\section{Abkürzung beim Einfügen von Daten}
+
+Wenn wir beim \lstinline[language=sql]{insert into}-Befehl in \textbf{alle} Spalten etwas einfügen möchten, dann können wir die Spaltennamen auch weglassen. \autoref{lst-insert-into-beispiel-2} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Einfügen ohne Spaltennamen.}, label	={lst-insert-into-beispiel-2}]
+insert into anmeldung 
+values ('Alice', 'night', 4, 'alice@mail.ch', 'sup7');
+\end{lstlisting}
+
+Das \ac{DBMS} geht beim Einfügen dann von der \say{Standard-Reihenfolge} der Spalten aus. Diese Reihenfolge legen wird durch das Erstellen der Tabelle (\lstinline[language=sql]{create table}) fest.  
+
+\section{Für eine Spalte keinen Wert einfügen}
+
+Beim Einfügen von Daten kann das Problem auftreten, dass wir für eine Spalte keinen Wert besitzen. Eine Person könnte zum Beispiel keine E-Mail-Adresse besitzen. In diesem Fall können wir für diese Spalte das reservierte Wort \lstinline[language=sql]{null} verwenden. Dadurch weiss das \ac{DBMS} für die einzufügende Zeile, dass für diese Spalte kein Wert existiert. \autoref{lst-insert-into-beispiel-3} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Eve besitzt keine E-Mail-Adresse.}, label	={lst-insert-into-beispiel-3}]
+insert into anmeldung 
+values ('Eve', 'classical', 1, null, 'superSecret');
+\end{lstlisting}
+
+\begin{important}
+Falls bei der Tabellendefinition eine Spalte mit \lstinline[language=sql]{not null} notiert wurde und wir beim Einfügen trotzdem das reservierte Wort \lstinline[language=sql]{null} verwenden, wird das \ac{DBMS} die Zeile \textbf{nicht} einfügen. Das \ac{DBMS} wird einen Fehler anzeigen.
+\end{important}
+
+\section{Mehrere Zeilen einfügen}
+
+Wir können auch mehrere Zeilen mit einem \lstinline[language=sql]{insert into}-Befehl in die Tabelle einfügen. Dazu trennt man die Zeilen durch ein Komma. \autoref{lst-insert-into-beispiel-4} zeigt ein Beispiel.
+
+\begin{lstlisting}[language=SQL, upquote=true, morekeywords={real, text}, caption={Es werden zwei Zeilen in die Tabelle eingefügt.}, label	={lst-insert-into-beispiel-4}]
+insert into anmeldung 
+values 
+('Carol', 'night', 3, 'carol@mail.org', '1234'),
+('Oscar', 'city', 1, 'oscar@mail.org', '4321');
+\end{lstlisting}

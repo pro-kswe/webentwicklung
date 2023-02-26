@@ -1,0 +1,12 @@
+% Tikz Lib imports
+\usetikzlibrary{decorations.pathreplacing, backgrounds, calc, arrows.meta, angles, quotes, positioning, tikzmark, trees, matrix, decorations.text, shadings, shapes.arrows, shapes.symbols, shadows, graphs, graphs.standard}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle, draw, inner sep=2pt] (char) {#1};}}
+
+\newcommand{\tikzmarktable}[1]{\tikz[overlay, remember picture] \node (#1) {};}
+\newcommand{\DrawLine}[3][]{%
+    \begin{tikzpicture}[overlay, remember picture]
+        \draw [#1] ($(#2)+(0,0.6ex)$) -- ($(#3)+(0,0.6ex)$);
+    \end{tikzpicture}%
+}%

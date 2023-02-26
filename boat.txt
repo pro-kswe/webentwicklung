@@ -1,0 +1,14 @@
+drop table if exists boat cascade;
+
+create table boat (
+    boat_id varchar(100) unique not null,
+    boat_name text not null,
+    color text not null
+);
+
+-- Daten einfuegen
+
+insert into boat (boat_id, boat_name, color)
+values ('b_101', 'Interlake', 'blue'),
+       ('b_102', 'Interlake', 'red'),
+       ('b_105', 'Titanic', 'rusty')
